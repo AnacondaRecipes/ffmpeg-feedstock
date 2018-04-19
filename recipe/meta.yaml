@@ -5,43 +5,47 @@ package:
   version: {{ version }}
 
 source:
-  fn: ffmpeg-{{ version }}.tar.gz  # [not win]
   url: https://ffmpeg.org/releases/ffmpeg-{{ version }}.tar.gz  # [not win]
-  sha256: ecb99b0d191c6a16d114d2ee4b91e4ca824f67d31565dd6de9d1c26ee192739f  # [not win]
+  sha256: 6ed03b00404a3923e3c2f560248a9c9ad79fbaaee26d723f74aae6b31fe2bae6  # [not win]
 
-  fn: ffmpeg-{{ version }}-win32-shared.zip  # [win32]
   url: https://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-{{ version }}-win32-shared.zip  # [win32]
   sha256: 58f091d8fafbb15631226fa6c2023e8f8c83efaad5a4fedf1ff8a4d0626a3b30  # [win32]
 
-  fn: ffmpeg-{{ version }}-win64-shared.zip  # [win64]
   url: https://ffmpeg.zeranoe.com/builds/win64/shared/ffmpeg-{{ version }}-win64-shared.zip  # [win64]
   sha256: 03731faabc5bec2e13ad6079e26a246c087934c1b3cf7fad80e7723d8f8a23f2  # [win64]
 
+
 build:
   number: 0
+  # The windows build is repacking binaries rather than building from source
+  skip: True  # [win]
+  run_exports:
+    # seems to be minor version compatibility
+    # https://abi-laboratory.pro/tracker/timeline/ffmpeg/
+    - {{ pin_subpackage('ffmpeg', max_pin='x.x') }}
 
 requirements:
   build:
-    - toolchain    # [not win]
-    - pkg-config   # [not win]
-    - libtool      # [not win]
-    - yasm         # [not win]
-    - bzip2 1.0.*  # [not win]
-    - freetype 2.8.1     # [not win]
-    - libiconv 1.15     # [not win]
-    - x264         # [not win]
-    - zlib 1.2.11   # [not win]
-    - gnutls       # [not win]
-    - 7za          # [win]
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
     - curl >=7.44.0,<8         # [win]
-    - openssl      # [win]
-  run:
-    - bzip2 1.0.*  # [not win]
-    - freetype 2.8.1     # [not win]
-    - libiconv 1.15     # [not win]
-    - x264         # [not win]
-    - zlib 1.2.11   # [not win]
+    - 7za                      # [win]
+  host:
+    - pkg-config  # [not win]
+    - libtool     # [not win]
+    - bzip2       # [not win]
+    - zlib        # [not win]
+    - libiconv    # [osx]
+    - yasm
+    - libvpx      # [not win]
+    - libopus     # [not win]
+    - freetype     # [not win]
     - gnutls       # [not win]
+    - x264         # [not win and GPL_ok==1]
+    # used for sha256 within bld.bat?
+    # - openssl      # [win]
+  run:
+    - x264         # [not win and GPL_ok==1]
 
 test:
   commands:
@@ -53,26 +57,29 @@ test:
         "avcodec",
         "avdevice",
         "swresample",
-        "postproc",
         "avfilter",
         "swresample",
         "avcodec",
         "avformat",
         "swscale",
-        "avresample"
     ] %}
     {% for each_ffmpeg_lib in ffmpeg_libs %}
     - test -f $PREFIX/lib/lib{{ each_ffmpeg_lib }}.dylib  # [osx]
     - test -f $PREFIX/lib/lib{{ each_ffmpeg_lib }}.so     # [linux]
     {% endfor %}
-    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
+    - conda inspect linkages -p $PREFIX ffmpeg  # [not win]
+    - conda inspect objects -p $PREFIX ffmpeg  # [osx]
 
 about:
   home: http://www.ffmpeg.org/
-  license: GPL 3
-  license_file: COPYING.GPLv3  # [unix]
+  license: GPL 3               # [GPL_ok == 1]
+  license_file: COPYING.GPLv3  # [GPL_ok == 1]
+  license: LGPL 2.1            # [GPL_ok == 0]
+  license_family: LGPL         # [GPL_ok == 0]
+  license_file: COPYING.LGPLv2.1
   summary: Cross-platform solution to record, convert and stream audio and video.
+  dev_url: https://ffmpeg.org/developer.html
+  doc_url: https://ffmpeg.org/documentation.html
 
 extra:
   recipe-maintainers:

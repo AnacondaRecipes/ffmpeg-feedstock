@@ -10,19 +10,20 @@ if %ARCH% == 32 (
 )
 
 rem Download the source and check the SHA256
-cd %SRC_DIR%
-curl -L -O "https://ffmpeg.zeranoe.com/builds/win%ARCH%/dev/%FFMPEG_FN%-dev.zip"
-openssl dgst -sha256 -out sha256.out %FFMPEG_FN%-dev.zip
-SET /p DOWNLOADED_SHA256=<sha256.out
-if NOT "%DOWNLOADED_SHA256%" == %FFMPEG_SHA256% (
-    exit 1
-)
+curl -L -O "https://ffmpeg.zeranoe.com/builds/win%ARCH%/dev/%FFMPEG_FN%-dev.7z"
+:: Our openssl doesn't have the binary, so we cannot do this checl
+:: openssl dgst -sha256 -out sha256.out %FFMPEG_FN%-dev.7z
+:: SET /p DOWNLOADED_SHA256=<sha256.out
+:: if NOT "%DOWNLOADED_SHA256%" == %FFMPEG_SHA256% (
+::     exit 1
+:: )
 
-rem Extract the archive
-7za x %FFMPEG_FN%-dev.zip
+rem Extract the archives
+7za x %SRC_DIR%\%FFMPEG_FN%-shared.7z -o%SRC_DIR%
+7za x %FFMPEG_FN%-dev.7z -o%SRC_DIR%
 
 rem Copy over the bin, include and lib dirs
-robocopy %SRC_DIR%\bin\ %LIBRARY_BIN%\ *.* /E
+robocopy %SRC_DIR%\%FFMPEG_FN%-shared\bin\ %LIBRARY_BIN%\ *.* /E
 if %ERRORLEVEL% GEQ 8 exit 1
 
 robocopy %SRC_DIR%\%FFMPEG_FN%-dev\include\ %LIBRARY_INC%\ *.* /E
@@ -32,8 +33,8 @@ robocopy %SRC_DIR%\%FFMPEG_FN%-dev\lib\ %LIBRARY_LIB%\ *.* /E
 if %ERRORLEVEL% GEQ 8 exit 1
 
 rem Add the licences to the recipe directory
-copy "%SRC_DIR%\README.txt" "%RECIPE_DIR%"
+copy "%SRC_DIR%\%FFMPEG_FN%-shared\README.txt" "%RECIPE_DIR%"
 mkdir "%RECIPE_DIR%\licenses"
-copy "%SRC_DIR%\licenses" "%RECIPE_DIR%\licenses"
+copy "%SRC_DIR%\%FFMPEG_FN%-shared\licenses" "%RECIPE_DIR%\licenses"
 
 exit 0
