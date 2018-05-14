@@ -5,22 +5,25 @@ unset SUBDIR
 
 ./configure \
         --prefix="${PREFIX}" \
+        --cc=${CC} \
         --disable-doc \
         --enable-shared \
         --enable-static \
-        --extra-cflags="-Wall -g -m64 -pipe -O3 -march=x86-64 -fPIC" \
-        --extra-cxxflags="-Wall -g -m64 -pipe -O3 -march=x86-64 -fPIC" \
-        --extra-libs="-lpthread -lm -lz" \
         --enable-zlib \
         --enable-pic \
-        --enable-pthreads \
         --enable-gpl \
         --enable-version3 \
+        --disable-nonfree \
         --enable-hardcoded-tables \
         --enable-avresample \
         --enable-libfreetype \
-        --enable-gnutls \
-        --enable-libx264
+        --disable-openssl \
+        --disable-gnutls \
+        --enable-libvpx \
+        --enable-pthreads \
+        --enable-libopus \
+        --enable-postproc \
+        --disable-libx264
 
-make -j${CPU_COUNT}
-make install -j${CPU_COUNT}
+make -j${CPU_COUNT} ${VERBOSE_AT}
+make install -j${CPU_COUNT} ${VERBOSE_AT}

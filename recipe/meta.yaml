@@ -5,7 +5,6 @@ package:
   version: {{ version }}
 
 source:
-  fn: ffmpeg-{{ version }}.tar.gz  # [not win]
   url: https://ffmpeg.org/releases/ffmpeg-{{ version }}.tar.gz  # [not win]
   sha256: dc4b1c622baa34fc68d763cd2818e419d1af90271e0506604905f25a46ea8273  # [not win]
   # This patch is required to fix https://trac.macports.org/ticket/55746
@@ -24,37 +23,40 @@ source:
 
 build:
   number: 0
+  # The windows build is repacking binaries rather than building from source
+  skip: True  # [win]
+  run_exports:
+    # seems to be minor version compatibility
+    # https://abi-laboratory.pro/tracker/timeline/ffmpeg/
+    - {{ pin_subpackage('ffmpeg', max_pin='x.x') }}
+  missing_dso_whitelist:  # [osx]
+    - /System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox  # [osx]
 
 requirements:
   build:
-    - {{ compiler("c") }}
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
     - pkg-config  # [not win]
     - libtool  # [not win]
-    - nasm  # [not win]
-    - 7za  # [win]
-    - curl >=7  # [win]
-    - openssl  # [win]
+    - yasm  # [not win]
+
   host:
     - bzip2  # [not win]
     - freetype  # [not win]
-    - libiconv  # [not win]
-    - x264  # [not win]
+    - libiconv  # [osx]
     - zlib  # [not win]
-    - gnutls  # [not win]
-  run:
-    - bzip2  # [not win]
     - freetype  # [not win]
-    - libiconv  # [not win]
-    - x264  # [not win]
-    - zlib  # [not win]
-    - gnutls  # [not win]
+    - libvpx  # [not win]
+    - libopus  # [not win]
 
 test:
   commands:
     - ffmpeg --help
     - ffmpeg -codecs | grep "DEVI.S zlib"  # [unix]
-    - ffmpeg -codecs | grep "DEV.LS h264"  # [unix]
-    - ffmpeg -protocols | grep "https"  # [not win]
+    # macOS h264 support comes from the VideoToolbox Framework I guess?
+    - ffmpeg -codecs | grep "DEV.LS h264"  # [osx]
+    # It is unclear to me why this is supported on macOS. Hmm.
+    - ffmpeg -protocols | grep "https"     # [osx]
     # Verify dynamic libraries on all systems
     {% set ffmpeg_libs = [
         "avcodec",
@@ -72,22 +74,24 @@ test:
     - test -f $PREFIX/lib/lib{{ each_ffmpeg_lib }}.dylib  # [osx]
     - test -f $PREFIX/lib/lib{{ each_ffmpeg_lib }}.so     # [linux]
     {% endfor %}
-    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
 
 about:
   home: http://www.ffmpeg.org/
   license: GPL 3
   license_file: COPYING.GPLv3  # [unix]
   summary: Cross-platform solution to record, convert and stream audio and video.
+  dev_url: https://ffmpeg.org/developer.html
+  doc_url: https://ffmpeg.org/documentation.html
 
 extra:
   recipe-maintainers:
+    - carlodri
+    - caspervdw
     - danielballan
     - jakirkham
+    - jjhelmus
     - 183amir
-    - caspervdw
-    - patricksnape
+    - mingwandroid
     - ocefpaf
+    - patricksnape
     - sdvillal
-    - carlodri
