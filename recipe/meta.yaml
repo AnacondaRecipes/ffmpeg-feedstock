@@ -39,6 +39,7 @@ requirements:
     - pkg-config  # [not win]
     - libtool  # [not win]
     - yasm  # [not win]
+    - make  # [not win]
 
   host:
     - bzip2  # [not win]
