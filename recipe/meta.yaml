@@ -1,63 +1,69 @@
-{% set version = "4.0" %}
+{% set version = "4.2" %}
 
 package:
   name: ffmpeg
   version: {{ version }}
 
 source:
-  url: https://ffmpeg.org/releases/ffmpeg-{{ version }}.tar.gz  # [not win]
-  sha256: dc4b1c622baa34fc68d763cd2818e419d1af90271e0506604905f25a46ea8273  # [not win]
-  # This patch is required to fix https://trac.macports.org/ticket/55746
-  # with Xcode < 7.0, where _Nullable attribues are not supported.
-  # Can probably be removed once the compiler infrastructure is updated.
-  patches:  # [osx]
-    - patch-libavcodec-videotoolboxenc.c-drop-Nullable.patch  # [osx]
+  - url: https://ffmpeg.org/releases/ffmpeg-{{ version }}.tar.gz  # [not win]
+    sha256: 9353228c2a397d1c62df7ca16033ec8a0cd2b12296de83a1c74948fe7395bb87  # [not win]
 
-  fn: ffmpeg-{{ version }}-win32-shared.zip  # [win32]
-  url: https://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-{{ version }}-win32-shared.zip  # [win32]
-  sha256: 530c92df0ca14c35901b4b681847d62da3c50a0cc9b7ced37b04968f6b5c243d  # [win32]
+  - url: https://ffmpeg.zeranoe.com/builds/win64/shared/ffmpeg-{{ version }}-win64-shared.zip  # [win]
+    sha256: 600ac804820fb12b989ff7f19f13f7866e1b79fbfe5e50f3bc43aee5fccdc392  # [win]
 
-  fn: ffmpeg-{{ version }}-win64-shared.zip  # [win64]
-  url: https://ffmpeg.zeranoe.com/builds/win64/shared/ffmpeg-{{ version }}-win64-shared.zip  # [win64]
-  sha256: 8fe2d344463dbefc2db4239a4203a55ed0324faceaae57276a40c4fabda84c37  # [win64]
+  - url: https://ffmpeg.zeranoe.com/builds/win64/dev/ffmpeg-{{ version }}-win64-dev.zip  # [win]
+    sha256: 1beb19f168778fb631621c2eead96f9791fd6b63456ddc20ded5f2693cbdb5fc  # [win]
 
 build:
   number: 0
   # The windows build is repacking binaries rather than building from source
-  skip: True  # [win]
   run_exports:
-    # seems to be minor version compatibility
-    # https://abi-laboratory.pro/tracker/timeline/ffmpeg/
+  # seems to be minor version compatibility
+  # https://abi-laboratory.pro/tracker/timeline/ffmpeg/
     - {{ pin_subpackage('ffmpeg', max_pin='x.x') }}
   missing_dso_whitelist:  # [osx]
     - /System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox  # [osx]
 
 requirements:
   build:
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
+    - {{ compiler("c") }}
+    - {{ compiler("cxx") }}
     - pkg-config  # [not win]
     - libtool  # [not win]
-    - yasm  # [not win]
+    - nasm  # [not win and not ppc64le and not aarch64]
     - make  # [not win]
-
   host:
     - bzip2  # [not win]
     - freetype  # [not win]
+    # - gnutls  # [not win]
     - libiconv  # [osx]
+    - x264  # [not win and not ppc64le and not aarch64]
     - zlib  # [not win]
-    - freetype  # [not win]
+    - openh264  # [not win and not ppc64le and not aarch64]
+    - lame  # [not win]
+    - gmp  # [unix]
     - libvpx  # [not win]
-    - libopus  # [not win]
+    - libopus # [not win]
+    - openssl # [not win]
+  run:
+    - bzip2  # [not win]
+    - freetype  # [not win]
+    # - gnutls  # [not win]
+    - openh264  # [not win and not ppc64le and not aarch64]
+    - lame  # [not win]
+    - gmp  # [unix]
 
 test:
   commands:
     - ffmpeg --help
-    - ffmpeg -codecs | grep "DEVI.S zlib"  # [unix]
-    # macOS h264 support comes from the VideoToolbox Framework I guess?
-    - ffmpeg -codecs | grep "DEV.LS h264"  # [osx]
-    # It is unclear to me why this is supported on macOS. Hmm.
-    - ffmpeg -protocols | grep "https"     # [osx]
+    - ffmpeg -loglevel panic -codecs
+    - ffmpeg -loglevel panic -protocols | grep "https"  # [not win]
+    - ffmpeg -loglevel panic -codecs | grep "libmp3lame"  # [not win]
+    - ffmpeg -loglevel panic -codecs | grep "DEVI.S zlib"  # [unix]
+    - ffmpeg -loglevel panic -codecs | grep "DEV.LS h264"  # [linux64 or osx64]
+    - ffmpeg -loglevel panic -codecs | grep "D.V.LS h264"  # [ppc64le]
+    - ffmpeg -loglevel panic -codecs | grep "libx264"  # [linux64 or osx64]
+    - ffmpeg -loglevel panic -codecs | grep "libopenh264"  # [linux64 or osx64]
     # Verify dynamic libraries on all systems
     {% set ffmpeg_libs = [
         "avcodec",
