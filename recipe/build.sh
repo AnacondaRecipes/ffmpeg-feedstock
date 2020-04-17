@@ -3,22 +3,42 @@
 # unset the SUBDIR variable since it changes the behavior of make here
 unset SUBDIR
 
-if [ "${target_platform}" == 'linux-aarch64' ] || [ "${target_platform}" == "linux-ppc64le" ]; then
-    x264libs=""
+USE_NONFREE=no
+
+declare -a _CONFIG_OPTS=()
+
+# We do not care what the defaults are as they could change. Be explicit
+# about every flag.
+if [[ ${USE_NONFREE} == yes ]]; then
+  _CONFIG_OPTS+=("--enable-nonfree")
+  _CONFIG_OPTS+=("--disable-gpl")
+  _CONFIG_OPTS+=("--disable-gnutls")
+  _CONFIG_OPTS+=("--enable-openssl")
+  # The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
+  _CONFIG_OPTS+=("--enable-libopenh264")
+  # GPL-3.0
+  _CONFIG_OPTS+=("--enable-libx264")
 else
-    x264libs="--enable-libopenh264 --enable-libx264"
+  _CONFIG_OPTS+=("--disable-nonfree")
+  _CONFIG_OPTS+=("--enable-gpl")
+  _CONFIG_OPTS+=("--enable-gnutls")
+  # OpenSSL 3 will be Apache-licensed so we can revisit this later:
+  # https://github.com/openssl/openssl/commit/151333164ece49fdba3fe5c4bbdc3333cd9ae66d
+  _CONFIG_OPTS+=("--disable-openssl")
+  # The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
+  _CONFIG_OPTS+=("--enable-libopenh264")
+  # GPL-3.0
+  _CONFIG_OPTS+=("--enable-libx264")
 fi
 
 ./configure \
         --prefix="${PREFIX}" \
         --cc=${CC} \
         --disable-doc \
-        --enable-gpl \
         --enable-avresample \
-        --disable-gnutls \
+        --enable-gmp \
         --enable-hardcoded-tables \
         --enable-libfreetype \
-        --enable-openssl \
         --enable-libvpx \
         --enable-pthreads \
         --enable-libopus \
@@ -30,8 +50,7 @@ fi
         --enable-version3 \
         --enable-zlib \
       	--enable-libmp3lame \
-        --enable-nonfree \
-        ${x264libs}
+        "${_CONFIG_OPTS[@]}"
 
 make -j${CPU_COUNT} ${VERBOSE_AT}
 make install -j${CPU_COUNT} ${VERBOSE_AT}
