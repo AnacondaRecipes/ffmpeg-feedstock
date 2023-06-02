@@ -34,18 +34,19 @@ requirements:
     - nasm  # [(osx and x86_64) or linux32 or linux64]
     - make  # [not win]
   host:
-    - bzip2  # [not win]
+    - bzip2 1.0.8 # [not win]
     - freetype  # [not win]
     - gnutls  # [not win]
-    - libiconv  # [not win and not linux]
+
+    - libiconv 1.16  # [not win and not linux]
     - x264  # [not win]
-    - zlib  # [not win]
+    - zlib 1.2.13  # [not win]
     - openh264  # [not win]
     - lame  # [not win]
     - gmp  # [unix]
     - libvpx  # [not win]
     - libopus # [not win]
-    - openssl {{ openssl }} # [not win]
+    - openssl 3.0.8 # [not win]
   run:
     - lame  # [not win]
 
