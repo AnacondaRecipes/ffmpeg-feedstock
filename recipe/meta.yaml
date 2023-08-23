@@ -15,7 +15,7 @@ source:
     sha256: f4885f859c5b0d6663c2a0a4c1cf035b1c60b146402790b796bd3ad84f4f3ca2  # [win]
 
 build:
-  number: 0
+  number: 1
   # The windows build is repacking binaries rather than building from source
   run_exports:
   # seems to be minor version compatibility
@@ -44,7 +44,6 @@ requirements:
     - gmp  # [unix]
     - libvpx  # [not win]
     - libopus # [not win]
-    - openssl # [not win]
   run:
     - lame  # [not win]
 
