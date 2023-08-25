@@ -47,6 +47,7 @@ requirements:
     - libopus # [not win]
   run:
     - lame  # [not win]
+    - xz
 
 test:
   commands:
