@@ -16,7 +16,7 @@ source:
 
 build:
   number: 1
-  skip: True # [not osx]
+  skip: True # [win]
   # The windows build is repacking binaries rather than building from source
   run_exports:
   # seems to be minor version compatibility
