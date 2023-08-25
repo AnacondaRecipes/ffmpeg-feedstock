@@ -47,6 +47,8 @@ requirements:
     - libopus # [not win]
   run:
     - lame  # [not win]
+    # There was an overlinking error on xz and I am curious if it is more than just an os x error
+    - xz
 
 test:
   commands:
