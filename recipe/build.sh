@@ -16,8 +16,11 @@ if [[ ${USE_NONFREE} == yes ]]; then
   _CONFIG_OPTS+=("--enable-openssl")
   # The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
   _CONFIG_OPTS+=("--enable-libopenh264")
-  # GPL-3.0
-  _CONFIG_OPTS+=("--enable-libx264")
+  if [[ ${target_platform} != linux-s390x ]]
+  then
+    # GPL-3.0
+    _CONFIG_OPTS+=("--enable-libx264")
+  elif
 else
   _CONFIG_OPTS+=("--disable-nonfree")
   _CONFIG_OPTS+=("--enable-gpl")
@@ -27,9 +30,17 @@ else
   _CONFIG_OPTS+=("--disable-openssl")
   # The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
   _CONFIG_OPTS+=("--enable-libopenh264")
-  # GPL-3.0
-  _CONFIG_OPTS+=("--enable-libx264")
+  if [[ ${target_platform} != linux-s390x ]]
+  then
+    # GPL-3.0
+    _CONFIG_OPTS+=("--enable-libx264")
+  elif
 fi
+
+if [[ ${target_platform} != linux-s390x ]]
+then
+  _CONFIG_OPTS+=("--enable-libvpx")
+elif
 
 ./configure \
         --prefix="${PREFIX}" \
@@ -39,7 +50,6 @@ fi
         --enable-gmp \
         --enable-hardcoded-tables \
         --enable-libfreetype \
-        --enable-libvpx \
         --enable-pthreads \
         --enable-libopus \
         --enable-postproc \
