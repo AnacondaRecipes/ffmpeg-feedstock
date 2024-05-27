@@ -35,7 +35,7 @@ fi
         --prefix="${PREFIX}" \
         --cc=${CC} \
         --disable-doc \
-        --enable-avresample \
+        --enable-swresample \
         --enable-gmp \
         --enable-hardcoded-tables \
         --enable-libfreetype \
