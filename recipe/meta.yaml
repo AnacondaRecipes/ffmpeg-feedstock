@@ -1,4 +1,8 @@
-{% set version = "7.0" %}
+{% set version = "7.0.1" %}
+# win specific vars
+{% set release_date = "2024-05-26" %}
+{% set release_time = "12-46" %}
+{% set release_commit = "g58ac1f9ea8" %}
 
 package:
   name: ffmpeg
@@ -8,11 +12,11 @@ source:
   - url: https://ffmpeg.org/releases/ffmpeg-{{ version }}.tar.gz  # [not win]
     sha256: 943a2a28044947c17a905c39075494b0da46ec0795224c2c61eff986518321eb  # [not win]
 
-  - url: https://ffmpeg.zeranoe.com/builds/win64/shared/ffmpeg-{{ version }}-win64-shared.zip  # [win]
-    sha256: 5aedf268952b7d9f6541dbfcb47cd86a7e7881a3b7ba482fd3bc4ca33bda7bf5  # [win]
+  - url: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-{{ release_date }}-{{ release_time }}/{{ name }}-n{{ version }}-1-{{ release_commit }}-win64-gpl-shared-7.0.zip  # [win]
+    sha256: 2c6a45e172f9322022b62afabff15bc17dfdd9f8e6de0a94e2dee90e01617c91  # [win]
 
-  - url: https://ffmpeg.zeranoe.com/builds/win64/dev/ffmpeg-{{ version }}-win64-dev.zip  # [win]
-    sha256: f4885f859c5b0d6663c2a0a4c1cf035b1c60b146402790b796bd3ad84f4f3ca2  # [win]
+  - url: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-{{ release_date }}-{{ release_time }}/{{ name }}-n{{ version }}-1-{{ release_commit }}-win64-gpl-7.0.zip  # [win]
+    sha256: 051f7fe677e0bfa7d40e2f3b7ee2d2ca5c2cf7fc92f8bb828d0103dd560646fc  # [win]
 
 build:
   number: 0
