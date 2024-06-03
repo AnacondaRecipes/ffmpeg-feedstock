@@ -3,42 +3,23 @@
 # unset the SUBDIR variable since it changes the behavior of make here
 unset SUBDIR
 
-USE_NONFREE=no
-
 declare -a _CONFIG_OPTS=()
 
+# We choose the following flags because we don't enable NON-FREE features
 # We do not care what the defaults are as they could change. Be explicit
 # about every flag.
-if [[ ${USE_NONFREE} == yes ]]; then
-  _CONFIG_OPTS+=("--enable-nonfree")
-  _CONFIG_OPTS+=("--disable-gpl")
-  _CONFIG_OPTS+=("--disable-gnutls")
-  _CONFIG_OPTS+=("--enable-openssl")
-  # The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
-  _CONFIG_OPTS+=("--enable-libopenh264")
-  if [[ ${target_platform} != linux-s390x ]]
-  then
-    # GPL-3.0
-    _CONFIG_OPTS+=("--enable-libx264")
-  elif
-else
-  _CONFIG_OPTS+=("--disable-nonfree")
-  _CONFIG_OPTS+=("--enable-gpl")
-  _CONFIG_OPTS+=("--enable-gnutls")
-  # OpenSSL 3 will be Apache-licensed so we can revisit this later:
-  # https://github.com/openssl/openssl/commit/151333164ece49fdba3fe5c4bbdc3333cd9ae66d
-  _CONFIG_OPTS+=("--disable-openssl")
-  # The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
-  _CONFIG_OPTS+=("--enable-libopenh264")
-  if [[ ${target_platform} != linux-s390x ]]
-  then
-    # GPL-3.0
-    _CONFIG_OPTS+=("--enable-libx264")
-  elif
-fi
+_CONFIG_OPTS+=("--disable-nonfree")
+_CONFIG_OPTS+=("--enable-gpl")
+_CONFIG_OPTS+=("--enable-gnutls")
+# As of OpenSSL 3, the license is Apache-2.0 so we can enable this
+_CONFIG_OPTS+=("--enable-openssl")
+# The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
+_CONFIG_OPTS+=("--enable-libopenh264")
 
 if [[ ${target_platform} != linux-s390x ]]
 then
+  # GPL-3.0
+  _CONFIG_OPTS+=("--enable-libx264")
   _CONFIG_OPTS+=("--enable-libvpx")
 elif
 
