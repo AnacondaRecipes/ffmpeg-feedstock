@@ -41,6 +41,7 @@ fi
         --enable-version3 \
         --enable-zlib \
       	--enable-libmp3lame \
+        --disable-sdl2 \
         "${_CONFIG_OPTS[@]}"
 
 make -j${CPU_COUNT} ${VERBOSE_AT}

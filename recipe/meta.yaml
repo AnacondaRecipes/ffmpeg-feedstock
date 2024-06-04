@@ -51,6 +51,7 @@ requirements:
     - openssl # [not win]
   run:
     - lame  # [not win]
+    - xz    # [osx]
 
 test:
   commands:
