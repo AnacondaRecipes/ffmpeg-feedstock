@@ -10,7 +10,7 @@ declare -a _CONFIG_OPTS=()
 # about every flag.
 _CONFIG_OPTS+=("--disable-nonfree")
 _CONFIG_OPTS+=("--enable-gpl")
-_CONFIG_OPTS+=("--enable-gnutls")
+_CONFIG_OPTS+=("--disable-gnutls")
 # As of OpenSSL 3, the license is Apache-2.0 so we can enable this
 _CONFIG_OPTS+=("--enable-openssl")
 # The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
@@ -21,7 +21,7 @@ then
   # GPL-3.0
   _CONFIG_OPTS+=("--enable-libx264")
   _CONFIG_OPTS+=("--enable-libvpx")
-elif
+fi
 
 ./configure \
         --prefix="${PREFIX}" \
