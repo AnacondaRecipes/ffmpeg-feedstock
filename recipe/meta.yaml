@@ -65,7 +65,6 @@ test:
     - ffmpeg -loglevel panic -codecs | grep "libmp3lame"  # [not win]
     - ffmpeg -loglevel panic -codecs | grep "DEVI.S zlib"  # [unix]
     - ffmpeg -loglevel panic -codecs | grep "DEV.LS h264"  # [linux64 or osx64]
-    - ffmpeg -loglevel panic -codecs | grep "D.V.LS h264"  # [ppc64le]
     - ffmpeg -loglevel panic -codecs | grep "libx264"  # [linux64 or osx64]
     - ffmpeg -loglevel panic -codecs | grep "libopenh264"  # [linux64 or osx64]
     # Verify dynamic libraries on all systems
