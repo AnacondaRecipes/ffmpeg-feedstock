@@ -78,8 +78,7 @@ test:
         "swresample",
         "avcodec",
         "avformat",
-        "swscale",
-        "avresample"
+        "swscale"
     ] %}
     {% for each_ffmpeg_lib in ffmpeg_libs %}
     - test -f $PREFIX/lib/lib{{ each_ffmpeg_lib }}.dylib  # [osx]
