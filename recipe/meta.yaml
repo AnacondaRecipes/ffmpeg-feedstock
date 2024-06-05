@@ -1,3 +1,4 @@
+{% set name = "ffmpeg" %}
 {% set version = "7.0.1" %}
 # win specific vars
 {% set release_date = "2024-05-26" %}
@@ -5,7 +6,7 @@
 {% set release_commit = "g58ac1f9ea8" %}
 
 package:
-  name: ffmpeg
+  name: {{ name }}
   version: {{ version }}
 
 source:
