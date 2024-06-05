@@ -26,6 +26,9 @@ build:
   # seems to be minor version compatibility
   # https://abi-laboratory.pro/tracker/timeline/ffmpeg/
     - {{ pin_subpackage('ffmpeg', max_pin='x.x') }}
+  ignore_run_exports:
+    - libcxx
+    - gnutls
   missing_dso_whitelist:  # [osx]
     - /System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox  # [osx]
 
