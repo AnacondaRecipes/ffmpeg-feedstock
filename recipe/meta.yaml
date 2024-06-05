@@ -73,7 +73,6 @@ test:
         "swresample",
         "postproc",
         "avfilter",
-        "swresample",
         "avcodec",
         "avformat",
         "swscale"
