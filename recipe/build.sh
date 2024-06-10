@@ -21,9 +21,6 @@ then
   # GPL-3.0
   _CONFIG_OPTS+=("--enable-libx264")
   _CONFIG_OPTS+=("--enable-libvpx")
-else
-  # disable x86 asm optimizations explicitly to avoid error about missing nasm
-  _CONFIG_OPTS+=("--disable-x86asm")
 fi
 
 ./configure \

@@ -38,7 +38,7 @@ requirements:
     - {{ compiler("cxx") }}
     - pkg-config  # [not win]
     - libtool  # [not win]
-    - nasm  # [(osx and x86_64) or linux]
+    - nasm  # [win or (osx and x86_64) or (linux and (not s390x))]
     - make  # [not win]
   host:
     - bzip2  # [not win]
