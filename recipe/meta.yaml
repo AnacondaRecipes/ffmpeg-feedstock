@@ -95,6 +95,11 @@ about:
   license_file: LICENSE.txt  # [win]
   license_family: OTHER
   summary: Cross-platform solution to record, convert and stream audio and video.
+  description: |
+    FFmpeg is a free and open-source software project consisting of a suite of libraries and programs for handling
+    video, audio, and other multimedia files and streams. At its core is the command-line ffmpeg tool itself, designed
+    for processing of video and audio files. It is widely used for format transcoding, basic editing (trimming and
+    concatenation), video scaling, video post-production effects and standards compliance (SMPTE, ITU).
   dev_url: https://ffmpeg.org/developer.html
   doc_url: https://ffmpeg.org/documentation.html
 
