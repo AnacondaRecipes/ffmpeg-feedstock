@@ -1,10 +1,10 @@
 {% set name = "ffmpeg" %}
 {% set version = "7.0.1" %}
 # win specific vars
-{% set release_date = "2024-05-28" %}
-{% set release_time = "13-19" %}
-{% set release_commit = "g1800213575" %}
-{% set release_n = "3" %}
+{% set release_date = "2024-05-29" %}
+{% set release_time = "12-45" %}
+{% set release_commit = "g449cab7b16" %}
+{% set release_n = "4" %}
 
 package:
   name: {{ name }}
@@ -15,10 +15,10 @@ source:
     sha256: e273eae00b4f833595654c1ee2b2349240e0332f9dbf3c4cadd39df9819ff052  # [not win]
 
   - url: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-{{ release_date }}-{{ release_time }}/{{ name }}-n{{ version }}-{{ release_n }}-{{ release_commit }}-win64-gpl-shared-7.0.zip  # [win]
-    sha256: 077bea07fea45f46f6d7b96d29830c71051dcede3f7df4c8b9de205fc88254be  # [win]
+    sha256: f821be6d59e1c5ecc9736e2f655d73a6faa4389b3fac3bf2838b1b83edba820c  # [win]
 
   - url: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-{{ release_date }}-{{ release_time }}/{{ name }}-n{{ version }}-{{ release_n }}-{{ release_commit }}-win64-gpl-7.0.zip  # [win]
-    sha256: ef09f1034f82e860c114c1072b0b91256029591ba75cd4d0b2ed24956a86ce7c  # [win]
+    sha256: 6e6e44c778fddb26535053a38fb2fc20c7f06b164f3d4462fcbbd0dc4760fb8c  # [win]
 
 build:
   number: 0
