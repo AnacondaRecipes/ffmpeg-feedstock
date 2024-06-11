@@ -15,10 +15,10 @@ source:
     sha256: e273eae00b4f833595654c1ee2b2349240e0332f9dbf3c4cadd39df9819ff052  # [not win]
 
   - url: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-{{ release_date }}-{{ release_time }}/{{ name }}-n{{ version }}-{{ release_n }}-{{ release_commit }}-win64-gpl-shared-7.0.zip  # [win]
-    sha256: 2c6a45e172f9322022b62afabff15bc17dfdd9f8e6de0a94e2dee90e01617c91  # [win]
+    sha256: 077bea07fea45f46f6d7b96d29830c71051dcede3f7df4c8b9de205fc88254be  # [win]
 
   - url: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-{{ release_date }}-{{ release_time }}/{{ name }}-n{{ version }}-{{ release_n }}-{{ release_commit }}-win64-gpl-7.0.zip  # [win]
-    sha256: 051f7fe677e0bfa7d40e2f3b7ee2d2ca5c2cf7fc92f8bb828d0103dd560646fc  # [win]
+    sha256: ef09f1034f82e860c114c1072b0b91256029591ba75cd4d0b2ed24956a86ce7c  # [win]
 
 build:
   number: 0
