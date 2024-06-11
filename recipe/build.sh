@@ -23,6 +23,9 @@ then
   _CONFIG_OPTS+=("--enable-libvpx")
 fi
 
+# configure AR
+_CONFIG_OPTS+=("--ar=${AR}")
+
 ./configure \
         --prefix="${PREFIX}" \
         --cc=${CC} \
