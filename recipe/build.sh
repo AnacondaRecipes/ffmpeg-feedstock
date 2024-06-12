@@ -23,9 +23,12 @@ then
   _CONFIG_OPTS+=("--enable-libvpx")
 fi
 
-# configure AR and RANLIB since they are not always automatically detected
+# configure AR, RANLIB, STRIP and co. since they are not always automatically detected
 _CONFIG_OPTS+=("--ar=${AR}")
+_CONFIG_OPTS+=("--as=${AS}")
+_CONFIG_OPTS+=("--nm=${NM}")
 _CONFIG_OPTS+=("--ranlib=${RANLIB}")
+_CONFIG_OPTS+=("--strip=${STRIP}")
 
 ./configure \
         --prefix="${PREFIX}" \
