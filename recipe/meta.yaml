@@ -81,13 +81,12 @@ test:
 about:
   home: https://www.ffmpeg.org
   license: GPL-2.0-or-later AND GPL-3.0-or-later AND LGPL-3.0-or-later
-  license_file:         # [not win]
-    - COPYING.GPLv2     # [not win]
-    - COPYING.GPLv3     # [not win]
-    - COPYING.LGPLv2.1  # [not win]
-    - COPYING.LGPLv3    # [not win]
-    - LICENSE.md        # [not win]
-  license_file: LICENSE.txt  # [win]
+  license_file:
+    - COPYING.GPLv2
+    - COPYING.GPLv3
+    - COPYING.LGPLv2.1
+    - COPYING.LGPLv3
+    - LICENSE.md
   license_family: OTHER
   summary: Cross-platform solution to record, convert and stream audio and video.
   description: |
