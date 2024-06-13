@@ -10,17 +10,16 @@ package:
   version: {{ version }}
 
 source:
-  - url: https://ffmpeg.org/releases/ffmpeg-{{ version }}.tar.gz  # [not (win or osx)]
-    sha256: b0aee531e4a91fed6bc031445dfc3ad8eb36de1fcb0fa2acdb589ecc9f8dc9cb  # [not (win or osx)]
-
-  - url: https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n{{ version }}.tar.gz  # [osx]
-    sha256: 7c1ebea95d815e49c1e60c7ee816410dec73a81b8ac002b276780d2f9048e598  # [osx]
+  - url: https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n{{ version }}.tar.gz
+    sha256: 7c1ebea95d815e49c1e60c7ee816410dec73a81b8ac002b276780d2f9048e598
 
   - url: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-{{ release_date }}-{{ release_time }}/{{ name }}-n{{ version }}-win64-gpl-shared-{{ version_majmin }}.zip  # [win]
     sha256: 684191528ab9ccddd616d9b47ad1c17d6a20c3c3ffacfba19db6c8a4d43e0eab  # [win]
+    folder: win-gpl
 
   - url: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-{{ release_date }}-{{ release_time }}/{{ name }}-n{{ version }}-win64-gpl-{{ version_majmin }}.zip  # [win]
     sha256: e04b6373913e17ac8e3ed2131ac13ec633897dbae15dd566cf9982805f857bca  # [win]
+    folder: win-gpl
 
 build:
   number: 0
