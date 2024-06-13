@@ -96,7 +96,7 @@ about:
     video, audio, and other multimedia files and streams. At its core is the command-line ffmpeg tool itself, designed
     for processing of video and audio files. It is widely used for format transcoding, basic editing (trimming and
     concatenation), video scaling, video post-production effects and standards compliance (SMPTE, ITU).
-  dev_url: https://ffmpeg.org/developer.html
+  dev_url: https://git.ffmpeg.org/gitweb/ffmpeg.git
   doc_url: https://ffmpeg.org/documentation.html
 
 extra:
