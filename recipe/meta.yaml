@@ -23,6 +23,10 @@ source:
 
 build:
   number: 0
+  ignore_run_exports:
+    - libcxx
+    - gnutls
+    - libgcrypt
 
 requirements:
   build:
@@ -55,6 +59,8 @@ requirements:
   run:
     - lame  # [not win]
     - xz    # [osx]
+    - libglib
+    - cairo
 
 test:
   commands:
