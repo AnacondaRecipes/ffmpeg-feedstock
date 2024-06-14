@@ -42,7 +42,6 @@ requirements:
     - openh264  # [not win]
     - openjpeg  # [not win]
     - librsvg  # [not win]
-    - libssh2  # [not win]
     - libtheora  # [not win]
     - libvorbis  # [not win]
     - libxml2  # [not win]

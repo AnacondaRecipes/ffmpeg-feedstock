@@ -19,7 +19,6 @@ _CONFIG_OPTS+=("--enable-libopenh264")
 # enable other codecs and formats
 _CONFIG_OPTS+=("--enable-libopenjpeg")
 _CONFIG_OPTS+=("--enable-librsvg")
-_CONFIG_OPTS+=("--enable-libssh")
 _CONFIG_OPTS+=("--enable-libtheora")
 _CONFIG_OPTS+=("--enable-libvorbis")
 _CONFIG_OPTS+=("--enable-libxml2")
