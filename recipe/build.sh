@@ -16,9 +16,22 @@ _CONFIG_OPTS+=("--enable-openssl")
 # The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
 _CONFIG_OPTS+=("--enable-libopenh264")
 
+# enable other codecs and formats
+_CONFIG_OPTS+=("--enable-libopenjpeg")
+_CONFIG_OPTS+=("--enable-librsvg")
+_CONFIG_OPTS+=("--enable-libssh")
+_CONFIG_OPTS+=("--enable-libtheora")
+_CONFIG_OPTS+=("--enable-libvorbis")
+_CONFIG_OPTS+=("--enable-libxml2")
 if [[ ${target_platform} != linux-s390x ]]
 then
-  # GPL-3.0
+  _CONFIG_OPTS+=("--enable-libtesseract")
+  _CONFIG_OPTS+=("--enable-gcrypt")
+fi
+
+# GPL-3.0
+if [[ ${target_platform} != linux-s390x ]]
+then
   _CONFIG_OPTS+=("--enable-libx264")
   _CONFIG_OPTS+=("--enable-libvpx")
 fi
