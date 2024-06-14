@@ -26,10 +26,6 @@ source:
 
 build:
   number: 0
-  # The windows build is repacking binaries rather than building from source
-  # ignore_run_exports:
-  #   - libcxx
-  #   - gnutls
 
 requirements:
   build:
