@@ -61,7 +61,7 @@ requirements:
     - libglib
     - cairo
     - libiconv
-    - libgcrypt
+    - libgcrypt  # [not s390x]
 
 test:
   commands:
