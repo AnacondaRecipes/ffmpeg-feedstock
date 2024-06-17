@@ -45,7 +45,7 @@ requirements:
     - openh264  # [not win]
     - openjpeg  # [not win]
     - librsvg  # [not (win or linux)]
-    - libglib  # [linux and aarch64]
+    - libglib  # [linux]
     - libtheora  # [not win]
     - libvorbis  # [not win]
     - libxml2  # [not win]
