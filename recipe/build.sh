@@ -37,6 +37,7 @@ fi
 
 # configure AR, RANLIB, STRIP and co. since they are not always automatically detected
 _CONFIG_OPTS+=("--ar=${AR}")
+_CONFIG_OPTS+=("--nm=${NM}")
 _CONFIG_OPTS+=("--ranlib=${RANLIB}")
 _CONFIG_OPTS+=("--strip=${STRIP}")
 
