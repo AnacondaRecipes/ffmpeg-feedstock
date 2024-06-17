@@ -19,7 +19,7 @@ _CONFIG_OPTS+=("--enable-libopenh264")
 # enable other codecs and formats
 _CONFIG_OPTS+=("--enable-libopenjpeg")
 # temporarily disabling librsvg because of pkg-config not finding librsvg
-if [[ ${target_platform} != linux-64 ]]
+if [[ ${target_platform} != linux-64 ]] && [[ ${target_platform} != linux-aarch64 ]]
 then
   _CONFIG_OPTS+=("--enable-librsvg")
 fi
