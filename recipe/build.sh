@@ -18,7 +18,11 @@ _CONFIG_OPTS+=("--enable-libopenh264")
 
 # enable other codecs and formats
 _CONFIG_OPTS+=("--enable-libopenjpeg")
-_CONFIG_OPTS+=("--enable-librsvg")
+# temporarily disabling librsvg because of pkg-config not finding librsvg
+if [[ ${target_platform} != linux-64 ]]
+then
+  _CONFIG_OPTS+=("--enable-librsvg")
+fi
 _CONFIG_OPTS+=("--enable-libtheora")
 _CONFIG_OPTS+=("--enable-libvorbis")
 _CONFIG_OPTS+=("--enable-libxml2")
