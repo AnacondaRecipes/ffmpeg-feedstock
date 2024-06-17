@@ -45,6 +45,7 @@ requirements:
     - openh264  # [not win]
     - openjpeg  # [not win]
     - librsvg  # [not (win or (linux and (x86_64 or aarch64)))]
+    - libglib  # [linux and aarch64]
     - libtheora  # [not win]
     - libvorbis  # [not win]
     - libxml2  # [not win]
@@ -57,7 +58,7 @@ requirements:
     - openssl # [not win]
   run:
     - lame  # [not win]
-    - xz    # [osx or (linux and x86_64)]
+    - xz    # [osx or linux]
     - libglib
     - cairo
     - libiconv
