@@ -61,6 +61,8 @@ requirements:
     - xz    # [osx]
     - libglib
     - cairo
+    - libiconv
+    - libgcrypt
 
 test:
   commands:
