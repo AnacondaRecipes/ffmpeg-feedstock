@@ -59,10 +59,10 @@ requirements:
   run:
     - lame  # [not win]
     - xz    # [osx or linux]
-    - libglib
-    - cairo
-    - libiconv
-    - libgcrypt  # [not s390x]
+    - libglib  # [not win]
+    - cairo  # [not win]
+    - libiconv  # [not win]
+    - libgcrypt  # [not (win or s390x)]
 
 test:
   commands:
