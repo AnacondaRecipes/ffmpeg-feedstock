@@ -18,8 +18,8 @@ _CONFIG_OPTS+=("--enable-libopenh264")
 
 # enable other codecs and formats
 _CONFIG_OPTS+=("--enable-libopenjpeg")
-# temporarily disabling librsvg because of pkg-config not finding librsvg
-if [[ ${target_platform} != linux-64 ]] && [[ ${target_platform} != linux-aarch64 ]]
+# temporarily disabling librsvg because pkg-config doesn't find xau which is supposedly in the dependency chain of librsvg
+if [[ ${target_platform} != linux-64 ]] && [[ ${target_platform} != linux-aarch64 ]] && [[ ${target_platform} != linux-s390x ]]
 then
   _CONFIG_OPTS+=("--enable-librsvg")
 fi
