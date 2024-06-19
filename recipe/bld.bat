@@ -1,13 +1,5 @@
 @echo ON
 
-rem Copy over the bin, include and lib dirs
-robocopy %SRC_DIR%\win-gpl\bin\ %LIBRARY_BIN%\ *.* /E
-if %ERRORLEVEL% GEQ 8 exit 1
-
-robocopy %SRC_DIR%\win-gpl\include\ %LIBRARY_INC%\ *.* /E
-if %ERRORLEVEL% GEQ 8 exit 1
-
-robocopy %SRC_DIR%\win-gpl\lib\ %LIBRARY_LIB%\ *.* /E
-if %ERRORLEVEL% GEQ 8 exit 1
-
-exit 0
+rem call autotools script from autotools_clang_conda
+call %BUILD_PREFIX%\Library\bin\run_autotools_clang_conda_build.bat
+if %ERRORLEVEL% neq 0 exit 1

@@ -31,6 +31,7 @@ requirements:
   build:
     - {{ compiler("c") }}
     - {{ compiler("cxx") }}
+    - autotools_clang_conda  # [win]
     - pkg-config  # [not win]
     - libtool  # [not win]
     - nasm  # [win or (osx and x86_64) or (linux and (not s390x))]
