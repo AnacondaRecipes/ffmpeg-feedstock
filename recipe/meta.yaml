@@ -17,7 +17,12 @@ build:
   number: 0
   ignore_run_exports:
     - libcxx
+    # these seems to be overdepending only on linux
+    - libstdcxx-ng  # [linux]
+    - libglib  # [linux]
     - gnutls
+    # this seems to be statically linked only on osx
+    - libgcrypt  # [osx]
 
 requirements:
   build:
@@ -52,10 +57,10 @@ requirements:
   run:
     - lame  # [not win]
     - xz
-    - libglib
+    - libglib  # [not linux]
     - cairo  # [not win]
     - libiconv
-    - libgcrypt  # [not s390x]
+    - libgcrypt  # [linux and not s390x]
 
 test:
   commands:
