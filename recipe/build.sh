@@ -38,6 +38,7 @@ fi
 if [[ ${target_platform} != win-64 ]]
 then
   _CONFIG_OPTS+=("--enable-libmp3lame")
+  _CONFIG_OPTS+=("--enable-gmp")
 fi
 
 # GPL-3.0
@@ -58,7 +59,6 @@ _CONFIG_OPTS+=("--strip=${STRIP}")
         --cc=${CC} \
         --disable-doc \
         --enable-swresample \
-        --enable-gmp \
         --enable-hardcoded-tables \
         --enable-libfreetype \
         --enable-pthreads \

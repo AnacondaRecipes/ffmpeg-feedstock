@@ -50,7 +50,7 @@ requirements:
     - tesseract  # [not (win or s390x)]
     - libgcrypt  # [not (win or s390x)]
     - lame  # [not win]
-    - gmp
+    - gmp  # [not win]
     - libvpx  # [not (win or s390x)]
     - libopus # [not win]
     - openssl
