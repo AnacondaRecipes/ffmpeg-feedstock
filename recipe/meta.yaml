@@ -10,8 +10,8 @@ package:
   version: {{ version }}
 
 source:
-  - url: https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n{{ version }}.tar.gz
-    sha256: 7c1ebea95d815e49c1e60c7ee816410dec73a81b8ac002b276780d2f9048e598
+  url: https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n{{ version }}.tar.gz
+  sha256: 7c1ebea95d815e49c1e60c7ee816410dec73a81b8ac002b276780d2f9048e598
 
 build:
   number: 0
