@@ -14,9 +14,13 @@ _CONFIG_OPTS+=("--disable-gnutls")
 # As of OpenSSL 3, the license is Apache-2.0 so we can enable this
 _CONFIG_OPTS+=("--enable-openssl")
 # The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
+if [[ ${target_platform} != win-64 ]]
+then
 _CONFIG_OPTS+=("--enable-libopenh264")
+_CONFIG_OPTS+=("--enable-libopus")
+fi
 
-# enable other codecs and formats
+# enable other codecs and formats depending on platform
 _CONFIG_OPTS+=("--enable-libopenjpeg")
 # temporarily disabling librsvg because pkg-config doesn't find xau which is supposedly in the dependency chain of librsvg
 if [[ ${target_platform} != linux-64 ]] && [[ ${target_platform} != linux-aarch64 ]] && [[ ${target_platform} != linux-s390x ]]
@@ -26,14 +30,18 @@ fi
 _CONFIG_OPTS+=("--enable-libtheora")
 _CONFIG_OPTS+=("--enable-libvorbis")
 _CONFIG_OPTS+=("--enable-libxml2")
-if [[ ${target_platform} != linux-s390x ]]
+if [[ ${target_platform} != linux-s390x ]] && [[ ${target_platform} != win-64 ]]
 then
   _CONFIG_OPTS+=("--enable-libtesseract")
   _CONFIG_OPTS+=("--enable-gcrypt")
 fi
+if [[ ${target_platform} != win-64 ]]
+then
+  _CONFIG_OPTS+=("--enable-libmp3lame")
+fi
 
 # GPL-3.0
-if [[ ${target_platform} != linux-s390x ]]
+if [[ ${target_platform} != linux-s390x ]] && [[ ${target_platform} != win-64 ]]
 then
   _CONFIG_OPTS+=("--enable-libx264")
   _CONFIG_OPTS+=("--enable-libvpx")
@@ -54,14 +62,12 @@ _CONFIG_OPTS+=("--strip=${STRIP}")
         --enable-hardcoded-tables \
         --enable-libfreetype \
         --enable-pthreads \
-        --enable-libopus \
         --enable-postproc \
         --enable-pic \
         --enable-pthreads \
         --enable-shared \
         --enable-version3 \
         --enable-zlib \
-      	--enable-libmp3lame \
         --disable-sdl2 \
         "${_CONFIG_OPTS[@]}"
 

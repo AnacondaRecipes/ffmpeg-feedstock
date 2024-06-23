@@ -24,38 +24,38 @@ requirements:
     - {{ compiler("c") }}
     - {{ compiler("cxx") }}
     - autotools_clang_conda  # [win]
-    - pkg-config  # [not win]
+    - pkg-config
     - libtool  # [not win]
     - nasm  # [win or (osx and x86_64) or (linux and (not s390x))]
     - make  # [not win]
   host:
-    - bzip2  # [not win]
-    - freetype  # [not win]
+    - bzip2
+    - freetype
     - gnutls  # [not win]
-    - libiconv  # [not win and not linux]
+    - libiconv
     - x264  # [not (win or s390x)]
-    - zlib  # [not win]
+    - zlib
     - openh264  # [not win]
-    - openjpeg  # [not win]
-    - librsvg  # [not (win or linux)]
-    - libglib  # [linux]
-    - libtheora  # [not win]
-    - libvorbis  # [not win]
-    - libxml2  # [not win]
+    - openjpeg
+    - librsvg  # [not linux]
+    - libglib  # [linux or win]
+    - libtheora
+    - libvorbis
+    - libxml2
     - tesseract  # [not (win or s390x)]
     - libgcrypt  # [not (win or s390x)]
     - lame  # [not win]
     - gmp
     - libvpx  # [not (win or s390x)]
     - libopus # [not win]
-    - openssl # [not win]
+    - openssl
   run:
     - lame  # [not win]
-    - xz    # [osx or linux]
-    - libglib  # [not win]
+    - xz
+    - libglib
     - cairo  # [not win]
-    - libiconv  # [not win]
-    - libgcrypt  # [not (win or s390x)]
+    - libiconv
+    - libgcrypt  # [not s390x]
 
 test:
   commands:
