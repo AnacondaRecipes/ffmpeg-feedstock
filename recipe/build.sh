@@ -48,6 +48,17 @@ then
   _CONFIG_OPTS+=("--enable-libvpx")
 fi
 
+if [[ ${target_platform} == win-64 ]]                                                                                                                         
+then                                                                                                                                                         
+_CONFIG_OPTS+=("--ld=${LD}")                                                                                                                                 
+_CONFIG_OPTS+=("--target-os=win64")                                                                                                                          
+_CONFIG_OPTS+=("--toolchain=msvc")                                                                                                                           
+_CONFIG_OPTS+=("--host-cc=${CC}")                                                                                                                            
+_CONFIG_OPTS+=("--enable-cross-compile")                                                                                                                     
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}                                                                                            
+PKG_CONFIG="${BUILD_PREFIX}/Library/bin/pkg-config"                                                                                                          
+fi
+
 # configure AR, RANLIB, STRIP and co. since they are not always automatically detected
 _CONFIG_OPTS+=("--ar=${AR}")
 _CONFIG_OPTS+=("--nm=${NM}")
