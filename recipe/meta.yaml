@@ -34,6 +34,7 @@ requirements:
     - nasm  # [win or (osx and x86_64) or (linux and (not s390x))]
     - make  # [not win]
   host:
+    - vs2015_runtime  # [win]
     - bzip2
     - freetype
     - gnutls  # [not win]
@@ -55,6 +56,7 @@ requirements:
     - libopus # [not win]
     - openssl
   run:
+    - vs2015_runtime  # [win]
     - lame  # [not win]
     - xz
     - libglib  # [not linux]
