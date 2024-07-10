@@ -41,7 +41,7 @@ requirements:
     - x264  # [not (win or s390x)]
     - zlib
     - openh264  # [not win]
-    - openjpeg >=2.1.0
+    - openjpeg >=2.1.0   # [not win]
     - librsvg  # [not linux]
     - libglib  # [linux or win]
     - libtheora

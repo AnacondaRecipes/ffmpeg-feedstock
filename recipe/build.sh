@@ -18,10 +18,10 @@ if [[ ${target_platform} != win-64 ]]
 then
 _CONFIG_OPTS+=("--enable-libopenh264")
 _CONFIG_OPTS+=("--enable-libopus")
+_CONFIG_OPTS+=("--enable-libopenjpeg")
 fi
 
 # enable other codecs and formats depending on platform
-_CONFIG_OPTS+=("--enable-libopenjpeg")
 # temporarily disabling librsvg because pkg-config doesn't find xau which is supposedly in the dependency chain of librsvg
 if [[ ${target_platform} != linux-64 ]] && [[ ${target_platform} != linux-aarch64 ]] && [[ ${target_platform} != linux-s390x ]]
 then
