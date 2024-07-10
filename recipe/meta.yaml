@@ -45,7 +45,7 @@ requirements:
     - librsvg  # [not linux]
     - libglib  # [linux or win]
     - libtheora
-    - libvorbis
+    - libvorbis # [not win]
     - libxml2
     - tesseract  # [not (win or s390x)]
     - libgcrypt  # [not (win or s390x)]

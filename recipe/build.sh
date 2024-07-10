@@ -19,6 +19,7 @@ then
 _CONFIG_OPTS+=("--enable-libopenh264")
 _CONFIG_OPTS+=("--enable-libopus")
 _CONFIG_OPTS+=("--enable-libopenjpeg")
+_CONFIG_OPTS+=("--enable-libvorbis")
 fi
 
 # enable other codecs and formats depending on platform
@@ -28,7 +29,7 @@ then
   _CONFIG_OPTS+=("--enable-librsvg")
 fi
 _CONFIG_OPTS+=("--enable-libtheora")
-_CONFIG_OPTS+=("--enable-libvorbis")
+
 _CONFIG_OPTS+=("--enable-libxml2")
 if [[ ${target_platform} != linux-s390x ]] && [[ ${target_platform} != win-64 ]]
 then
