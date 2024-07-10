@@ -55,6 +55,9 @@ then
   _CONFIG_OPTS+=("--toolchain=msvc")
   _CONFIG_OPTS+=("--host-cc=${CC}")
   _CONFIG_OPTS+=("--enable-cross-compile")
+  # ffmpeg by default attempts to link to libm
+  # but that doesn't exist for windows
+  _CONFIG_OPTS+=("--host-extralibs=")
   export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
   PKG_CONFIG="${BUILD_PREFIX}/Library/bin/pkg-config"
 fi
