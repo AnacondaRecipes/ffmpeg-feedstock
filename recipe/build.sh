@@ -20,6 +20,7 @@ _CONFIG_OPTS+=("--enable-libopenh264")
 _CONFIG_OPTS+=("--enable-libopus")
 _CONFIG_OPTS+=("--enable-libopenjpeg")
 _CONFIG_OPTS+=("--enable-libvorbis")
+_CONFIG_OPTS+=("--enable-pthreads")
 fi
 
 # enable other codecs and formats depending on platform
@@ -76,10 +77,8 @@ _CONFIG_OPTS+=("--strip=${STRIP}")
         --enable-swresample \
         --enable-hardcoded-tables \
         --enable-libfreetype \
-        --enable-pthreads \
         --enable-postproc \
         --enable-pic \
-        --enable-pthreads \
         --enable-shared \
         --enable-version3 \
         --enable-zlib \
