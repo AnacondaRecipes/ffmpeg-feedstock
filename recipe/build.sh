@@ -63,6 +63,8 @@ then
   # we don't want pthreads on win
   _CONFIG_OPTS+=("--disable-pthreads")
   _CONFIG_OPTS+=("--enable-w32threads")
+  # manually include the runtime libs
+  _CONFIG_OPTS+=("--extra-libs=ucrt.lib --extra-libs=vcruntime.lib --extra-libs=oldnames.lib")
   export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
   PKG_CONFIG="${BUILD_PREFIX}/Library/bin/pkg-config"
   # Delete line that includes unistd.h from zconf. we should patch this
