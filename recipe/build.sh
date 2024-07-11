@@ -20,6 +20,7 @@ _CONFIG_OPTS+=("--enable-libopenh264")
 _CONFIG_OPTS+=("--enable-libopus")
 _CONFIG_OPTS+=("--enable-libopenjpeg")
 _CONFIG_OPTS+=("--enable-libvorbis")
+_CONFIG_OPTS+=("--enable-pthreads")
 fi
 
 # enable other codecs and formats depending on platform
@@ -59,6 +60,9 @@ then
   # ffmpeg by default attempts to link to libm
   # but that doesn't exist for windows
   _CONFIG_OPTS+=("--host-extralibs=")
+  # we don't want pthreads on win
+  _CONFIG_OPTS+=("--disable-pthreads")
+  _CONFIG_OPTS+=("--enable-w32threads")
   export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
   PKG_CONFIG="${BUILD_PREFIX}/Library/bin/pkg-config"
   # Delete line that includes unistd.h from zconf. we should patch this
@@ -86,10 +90,8 @@ _CONFIG_OPTS+=("--strip=${STRIP}")
         --enable-swresample \
         --enable-hardcoded-tables \
         --enable-libfreetype \
-        --enable-pthreads \
         --enable-postproc \
         --enable-pic \
-        --enable-pthreads \
         --enable-shared \
         --enable-version3 \
         --enable-zlib \
