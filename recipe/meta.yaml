@@ -44,7 +44,7 @@ requirements:
     - zlib
     - openh264  # [not win]
     - openjpeg >=2.1.0   # [not win]
-    - librsvg  # [not linux]
+    - librsvg  # [osx]
     - libglib  # [linux or win]
     - libtheora
     - libvorbis # [not win]
@@ -72,7 +72,7 @@ test:
     - ffmpeg -loglevel panic -codecs | grep "DEVI.S zlib"  # [not win]
     - ffmpeg -loglevel panic -codecs | grep "DEV.LS h264"  # [not (win or s390x)]
     - ffmpeg -loglevel panic -codecs | grep "libx264"      # [not (win or s390x)]
-    - ffmpeg -loglevel panic -codecs | grep "libopenh264"
+    - ffmpeg -loglevel panic -codecs | grep "libopenh264"  # [not win]
     # Verify dynamic libraries on all systems
     {% set ffmpeg_libs = [
         "avcodec",

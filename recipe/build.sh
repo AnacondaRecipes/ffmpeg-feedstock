@@ -25,7 +25,7 @@ fi
 
 # enable other codecs and formats depending on platform
 # temporarily disabling librsvg because pkg-config doesn't find xau which is supposedly in the dependency chain of librsvg
-if [[ ${target_platform} != linux-64 ]] && [[ ${target_platform} != linux-aarch64 ]] && [[ ${target_platform} != linux-s390x ]]
+if [[ ${target_platform} != linux-64 ]] && [[ ${target_platform} != linux-aarch64 ]] && [[ ${target_platform} != linux-s390x ]] && [[ ${target_platform} != win-64 ]]
 then
   _CONFIG_OPTS+=("--enable-librsvg")
 fi
@@ -64,9 +64,8 @@ then
   _CONFIG_OPTS+=("--disable-pthreads")
   _CONFIG_OPTS+=("--enable-w32threads")
   # manually include the runtime libs
-  _CONFIG_OPTS+=("--extra-libs=\"ucrt.lib vcruntime.lib oldnames.lib\"")
-  _CONFIG_OPTS+=("--extra-libs=vcruntime.lib")
-  _CONFIG_OPTS+=("--extra-libs=oldnames.lib")
+  _CONFIG_OPTS+=("--extra-libs=ucrt.lib vcruntime.lib oldnames.lib")
+  _CONFIG_OPTS+=("--disable-stripping")
   export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
   PKG_CONFIG="${BUILD_PREFIX}/Library/bin/pkg-config"
   # Delete line that includes unistd.h from zconf. we should patch this
