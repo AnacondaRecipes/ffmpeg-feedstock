@@ -68,12 +68,7 @@ then
   _CONFIG_OPTS+=("--disable-stripping")
   export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
   PKG_CONFIG="${BUILD_PREFIX}/Library/bin/pkg-config"
-  # Delete line that includes unistd.h from zconf. we should patch this
-  # better for LLVM compatibility
-  # I submitted a ticket upstream
-  # https://github.com/madler/zlib/issues/674
-  # cp ${PREFIX}/include/zconf.h zconf.h.backup
-  # sed -i "/unistd/d" ${PREFIX}/include/zconf.h
+  # unistd.h is included in ${PREFIX}/include/zconf.h
   if [[ ! -f "${PREFIX}/include/unistd.h" ]]; then
       UNISTD_CREATED=1
       touch "${PREFIX}/include/unistd.h"
