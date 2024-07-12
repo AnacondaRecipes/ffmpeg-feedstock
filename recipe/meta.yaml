@@ -35,6 +35,8 @@ requirements:
     - libtool  # [not win]
     - nasm  # [win or (osx and x86_64) or (linux and (not s390x))]
     - make  # [not win]
+    - patch  # [not win]
+    - m2-patch  # [win]
   host:
     - bzip2
     - freetype
