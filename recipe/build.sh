@@ -18,17 +18,19 @@ if [[ ${target_platform} != win-64 ]]
 then
 _CONFIG_OPTS+=("--enable-libopenh264")
 _CONFIG_OPTS+=("--enable-libopus")
+_CONFIG_OPTS+=("--enable-libopenjpeg")
+_CONFIG_OPTS+=("--enable-libvorbis")
+_CONFIG_OPTS+=("--enable-pthreads")
 fi
 
 # enable other codecs and formats depending on platform
-_CONFIG_OPTS+=("--enable-libopenjpeg")
 # temporarily disabling librsvg because pkg-config doesn't find xau which is supposedly in the dependency chain of librsvg
-if [[ ${target_platform} != linux-64 ]] && [[ ${target_platform} != linux-aarch64 ]] && [[ ${target_platform} != linux-s390x ]]
+if [[ ${target_platform} != linux-64 ]] && [[ ${target_platform} != linux-aarch64 ]] && [[ ${target_platform} != linux-s390x ]] && [[ ${target_platform} != win-64 ]]
 then
   _CONFIG_OPTS+=("--enable-librsvg")
 fi
 _CONFIG_OPTS+=("--enable-libtheora")
-_CONFIG_OPTS+=("--enable-libvorbis")
+
 _CONFIG_OPTS+=("--enable-libxml2")
 if [[ ${target_platform} != linux-s390x ]] && [[ ${target_platform} != win-64 ]]
 then
@@ -48,6 +50,31 @@ then
   _CONFIG_OPTS+=("--enable-libvpx")
 fi
 
+if [[ ${target_platform} == win-64 ]]
+then
+  _CONFIG_OPTS+=("--ld=${LD}")
+  _CONFIG_OPTS+=("--target-os=win64")
+  _CONFIG_OPTS+=("--toolchain=msvc")
+  _CONFIG_OPTS+=("--host-cc=${CC}")
+  _CONFIG_OPTS+=("--enable-cross-compile")
+  # ffmpeg by default attempts to link to libm
+  # but that doesn't exist for windows
+  _CONFIG_OPTS+=("--host-extralibs=")
+  # we don't want pthreads on win
+  _CONFIG_OPTS+=("--disable-pthreads")
+  _CONFIG_OPTS+=("--enable-w32threads")
+  # manually include the runtime libs
+  _CONFIG_OPTS+=("--extra-libs=ucrt.lib vcruntime.lib oldnames.lib")
+  _CONFIG_OPTS+=("--disable-stripping")
+  export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
+  PKG_CONFIG="${BUILD_PREFIX}/Library/bin/pkg-config"
+  # unistd.h is included in ${PREFIX}/include/zconf.h
+  if [[ ! -f "${PREFIX}/include/unistd.h" ]]; then
+      UNISTD_CREATED=1
+      touch "${PREFIX}/include/unistd.h"
+  fi
+fi
+
 # configure AR, RANLIB, STRIP and co. since they are not always automatically detected
 _CONFIG_OPTS+=("--ar=${AR}")
 _CONFIG_OPTS+=("--nm=${NM}")
@@ -61,10 +88,8 @@ _CONFIG_OPTS+=("--strip=${STRIP}")
         --enable-swresample \
         --enable-hardcoded-tables \
         --enable-libfreetype \
-        --enable-pthreads \
         --enable-postproc \
         --enable-pic \
-        --enable-pthreads \
         --enable-shared \
         --enable-version3 \
         --enable-zlib \
