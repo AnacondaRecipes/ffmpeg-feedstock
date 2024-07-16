@@ -55,7 +55,6 @@ requirements:
   run:
     - lame  # [not win]
     - xz
-    - libglib  # [not linux]
     - cairo  # [not win]
     - libiconv
 
