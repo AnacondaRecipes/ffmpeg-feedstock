@@ -21,7 +21,6 @@ build:
     - libcxx
     # these seems to be overdepending only on linux
     - libstdcxx-ng  # [linux]
-    - libglib  # [linux]
     # this seems to be statically linked only on osx
 
 requirements:
@@ -44,7 +43,6 @@ requirements:
     - openh264  # [not win]
     - openjpeg >=2.1.0   # [not win]
     - librsvg  # [osx]
-    - libglib  # [linux or win]
     - libtheora
     - libvorbis # [not win]
     - libxml2
