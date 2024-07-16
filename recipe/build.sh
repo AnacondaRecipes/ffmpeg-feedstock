@@ -91,6 +91,7 @@ _CONFIG_OPTS+=("--strip=${STRIP}")
         --enable-postproc \
         --enable-pic \
         --enable-shared \
+        --disable-static \
         --enable-version3 \
         --enable-zlib \
         --disable-sdl2 \
