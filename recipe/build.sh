@@ -11,6 +11,7 @@ declare -a _CONFIG_OPTS=()
 _CONFIG_OPTS+=("--disable-nonfree")
 _CONFIG_OPTS+=("--enable-gpl")
 _CONFIG_OPTS+=("--disable-gnutls")
+_CONFIG_OPTS+=("--disable-gcrypt")
 # As of OpenSSL 3, the license is Apache-2.0 so we can enable this
 _CONFIG_OPTS+=("--enable-openssl")
 # The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
@@ -35,7 +36,6 @@ _CONFIG_OPTS+=("--enable-libxml2")
 if [[ ${target_platform} != linux-s390x ]] && [[ ${target_platform} != win-64 ]]
 then
   _CONFIG_OPTS+=("--enable-libtesseract")
-  _CONFIG_OPTS+=("--enable-gcrypt")
 fi
 if [[ ${target_platform} != win-64 ]]
 then

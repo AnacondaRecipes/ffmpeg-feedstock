@@ -23,7 +23,6 @@ build:
     - libstdcxx-ng  # [linux]
     - libglib  # [linux]
     # this seems to be statically linked only on osx
-    - libgcrypt  # [osx]
 
 requirements:
   build:
@@ -50,7 +49,6 @@ requirements:
     - libvorbis # [not win]
     - libxml2
     - tesseract  # [not (win or s390x)]
-    - libgcrypt  # [not (win or s390x)]
     - lame  # [not win]
     - gmp  # [not win]
     - libvpx  # [not (win or s390x)]
@@ -62,7 +60,6 @@ requirements:
     - libglib  # [not linux]
     - cairo  # [not win]
     - libiconv
-    - libgcrypt  # [linux and not s390x]
 
 test:
   commands:
