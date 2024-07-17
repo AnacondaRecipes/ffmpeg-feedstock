@@ -5,13 +5,11 @@ unset SUBDIR
 
 declare -a _CONFIG_OPTS=()
 
-# We choose the following flags because we don't enable NON-FREE features
+
 # We do not care what the defaults are as they could change. Be explicit
 # about every flag.
-_CONFIG_OPTS+=("--disable-nonfree")
-_CONFIG_OPTS+=("--enable-gpl")
-_CONFIG_OPTS+=("--disable-gnutls")
-_CONFIG_OPTS+=("--disable-gcrypt")
+
+
 # As of OpenSSL 3, the license is Apache-2.0 so we can enable this
 _CONFIG_OPTS+=("--enable-openssl")
 # The Cisco GPL-compliant wrapper (you need to get your own binaries for this)
@@ -21,7 +19,6 @@ _CONFIG_OPTS+=("--enable-libopenh264")
 _CONFIG_OPTS+=("--enable-libopus")
 _CONFIG_OPTS+=("--enable-libopenjpeg")
 _CONFIG_OPTS+=("--enable-libvorbis")
-_CONFIG_OPTS+=("--enable-pthreads")
 fi
 
 # enable other codecs and formats depending on platform
@@ -40,13 +37,10 @@ fi
 if [[ ${target_platform} != win-64 ]]
 then
   _CONFIG_OPTS+=("--enable-libmp3lame")
-  _CONFIG_OPTS+=("--enable-gmp")
 fi
 
-# GPL-3.0
 if [[ ${target_platform} != linux-s390x ]] && [[ ${target_platform} != win-64 ]]
 then
-  _CONFIG_OPTS+=("--enable-libx264")
   _CONFIG_OPTS+=("--enable-libvpx")
 fi
 
@@ -62,12 +56,12 @@ then
   _CONFIG_OPTS+=("--host-extralibs=")
   # we don't want pthreads on win
   _CONFIG_OPTS+=("--disable-pthreads")
-  _CONFIG_OPTS+=("--enable-w32threads")
+  #_CONFIG_OPTS+=("--enable-w32threads")
   # manually include the runtime libs
   _CONFIG_OPTS+=("--extra-libs=ucrt.lib vcruntime.lib oldnames.lib")
   _CONFIG_OPTS+=("--disable-stripping")
   export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
-  PKG_CONFIG="${BUILD_PREFIX}/Library/bin/pkg-config"
+  #PKG_CONFIG="${BUILD_PREFIX}/Library/bin/pkg-config"
   # unistd.h is included in ${PREFIX}/include/zconf.h
   if [[ ! -f "${PREFIX}/include/unistd.h" ]]; then
       UNISTD_CREATED=1
@@ -85,17 +79,26 @@ _CONFIG_OPTS+=("--strip=${STRIP}")
         --prefix="${PREFIX}" \
         --cc=${CC} \
         --disable-doc \
-        --enable-swresample \
+        --enable-demuxer=dash \
         --enable-hardcoded-tables \
         --enable-libfreetype \
-        --enable-postproc \
+        --enable-libharfbuzz \
+        --enable-libfontconfig \
+        --enable-libdav1d \
+        --enable-libaom \
         --enable-pic \
         --enable-shared \
-        --disable-static \
+        --enable-static \
         --enable-version3 \
-        --enable-zlib \
         --disable-sdl2 \
         "${_CONFIG_OPTS[@]}"
 
 make -j${CPU_COUNT} ${VERBOSE_AT}
 make install -j${CPU_COUNT} ${VERBOSE_AT}
+
+
+if [[ "${target_platform}" == win-* ]]; then
+  if [[ "${UNISTD_CREATED}" == "1" ]]; then
+      rm -f "${PREFIX}/include/unistd.h"
+  fi
+fi

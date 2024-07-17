@@ -35,10 +35,13 @@ requirements:
     - patch  # [not win]
     - m2-patch  # [win]
   host:
+    - aom
     - bzip2
+    - dav1d
     - freetype
+    - fontconfig
+    - harfbuzz
     - libiconv
-    - x264  # [not (win or s390x)]
     - zlib
     - openh264  # [not win]
     - openjpeg >=2.1.0   # [not win]
