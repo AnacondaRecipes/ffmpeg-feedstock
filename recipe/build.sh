@@ -76,6 +76,7 @@ _CONFIG_OPTS+=("--strip=${STRIP}")
         --cc=${CC} \
         --disable-doc \
         --enable-swresample \
+        --enable-swscale \
         --enable-openssl \
         --enable-libxml2 \
         --enable-libtheora \
