@@ -16,6 +16,7 @@ then
   _CONFIG_OPTS+=("--enable-libopenjpeg")
   _CONFIG_OPTS+=("--enable-libvorbis")
   _CONFIG_OPTS+=("--enable-libmp3lame")
+  _CONFIG_OPTS+=("--enable-pthreads")
 
   ##### For platforms LINUX-64, LINUX-AARCH64
   if [[ ${target_platform} == linux-64 ]] || [[ ${target_platform} == linux-aarch64 ]]
@@ -49,12 +50,11 @@ else
   _CONFIG_OPTS+=("--host-extralibs=")
   # we don't want pthreads on win
   _CONFIG_OPTS+=("--disable-pthreads")
-  #_CONFIG_OPTS+=("--enable-w32threads")
+  _CONFIG_OPTS+=("--enable-w32threads")
   # manually include the runtime libs
   _CONFIG_OPTS+=("--extra-libs=ucrt.lib vcruntime.lib oldnames.lib")
   _CONFIG_OPTS+=("--disable-stripping")
   export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
-  #PKG_CONFIG="${BUILD_PREFIX}/Library/bin/pkg-config"
   # unistd.h is included in ${PREFIX}/include/zconf.h
   if [[ ! -f "${PREFIX}/include/unistd.h" ]]; then
       UNISTD_CREATED=1
@@ -75,10 +75,12 @@ _CONFIG_OPTS+=("--strip=${STRIP}")
         --prefix="${PREFIX}" \
         --cc=${CC} \
         --disable-doc \
+        --enable-swresample \
         --enable-openssl \
         --enable-libxml2 \
         --enable-libtheora \
         --enable-demuxer=dash \
+        --enable-postproc \
         --enable-hardcoded-tables \
         --enable-libfreetype \
         --enable-libharfbuzz \
