@@ -84,6 +84,7 @@ _CONFIG_OPTS+=("--strip=${STRIP}")
         --enable-libharfbuzz \
         --enable-libfontconfig \
         --enable-libdav1d \
+        --enable-zlib \
         --enable-libaom \
         --enable-pic \
         --enable-shared \
