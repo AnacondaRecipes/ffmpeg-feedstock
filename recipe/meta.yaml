@@ -51,7 +51,6 @@ requirements:
     - libxml2
     - tesseract  # [not (win or s390x)]
     - lame  # [not win]
-    - gmp  # [not win]
     - libvpx  # [not (win or s390x)]
     - libopus # [not win]
     - openssl
