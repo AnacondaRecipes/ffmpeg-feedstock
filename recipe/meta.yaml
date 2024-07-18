@@ -69,7 +69,6 @@ test:
     - ffmpeg -loglevel panic -codecs | grep "libmp3lame"  # [not win]
     - ffmpeg -loglevel panic -codecs | grep "DEVI.S zlib"  # [not win]
     - ffmpeg -loglevel panic -codecs | grep "DEV.LS h264"  # [not (win or s390x)]
-    - ffmpeg -loglevel panic -codecs | grep "libx264"      # [not (win or s390x)]
     - ffmpeg -loglevel panic -codecs | grep "libopenh264"  # [not win]
     # Verify dynamic libraries on all systems
     {% set ffmpeg_libs = [

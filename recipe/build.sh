@@ -18,7 +18,7 @@ then
   _CONFIG_OPTS+=("--enable-libmp3lame")
 
   ##### For platforms LINUX-64, LINUX-AARCH64
-  if [[ ${target_platform} == linux-64 ]] && [[ ${target_platform} == linux-aarch64 ]]
+  if [[ ${target_platform} == linux-64 ]] || [[ ${target_platform} == linux-aarch64 ]]
   then
      # libtesseract not supported on s390x and win-64
     _CONFIG_OPTS+=("--enable-libtesseract")
@@ -27,7 +27,7 @@ then
   fi
 
   ##### For platforms OSX-*          #####
-  if [[ ${target_platform} == osx-64 ]] && [[ ${target_platform} == osx-arm64 ]]
+  if [[ ${target_platform} == osx-64 ]] || [[ ${target_platform} == osx-arm64 ]]
   then
      # on other platform pkg-config doesn't find xau which is supposedly in the dependency chain of librsvg
     _CONFIG_OPTS+=("--enable-librsvg")
@@ -36,11 +36,9 @@ then
     # libvpx not supported on s390x and win-64
     _CONFIG_OPTS+=("--enable-libvpx")
   fi
-fi
 
 ##### For platforms WIN-64           #####
-if [[ ${target_platform} == win-64 ]]
-then
+else
   _CONFIG_OPTS+=("--ld=${LD}")
   _CONFIG_OPTS+=("--target-os=win64")
   _CONFIG_OPTS+=("--toolchain=msvc")
