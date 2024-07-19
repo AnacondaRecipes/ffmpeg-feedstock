@@ -82,7 +82,8 @@ test:
     {% for each_ffmpeg_lib in ffmpeg_libs %}
     - test -f $CONDA_PREFIX/lib/lib{{ each_ffmpeg_lib }}.dylib  # [osx]
     - test -f $CONDA_PREFIX/lib/lib{{ each_ffmpeg_lib }}.so     # [linux]
-    - if not exist %PREFIX%\Library\bin\lib{{ each_ffmpeg_lib }}.dll exit 1  # [win]
+    - if not exist %PREFIX%\Library\bin\{{ each_ffmpeg_lib }}*.dll exit 1  # [win]
+    - if not exist %PREFIX%\Library\bin\{{ each_ffmpeg_lib }}.lib exit 1  # [win]
     {% endfor %}
 
 about:
