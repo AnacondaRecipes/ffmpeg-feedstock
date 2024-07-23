@@ -7,6 +7,8 @@ declare -a _CONFIG_OPTS=()
 
 if [[ ${target_platform} == win-64 ]]
 then
+  # the target-os and toolchain picked up by default is mingw, so we have to configure
+  # these flags ourselves to get it to build properly
   _CONFIG_OPTS+=("--ld=${LD}")
   _CONFIG_OPTS+=("--target-os=win64")
   _CONFIG_OPTS+=("--toolchain=msvc")
@@ -15,7 +17,7 @@ then
   # ffmpeg by default attempts to link to libm
   # but that doesn't exist for windows
   _CONFIG_OPTS+=("--host-extralibs=")
-  # we don't want pthreads on win
+  # we don't want pthreads on win, it's not posix compliant
   _CONFIG_OPTS+=("--disable-pthreads")
   _CONFIG_OPTS+=("--enable-w32threads")
   # manually include the runtime libs
@@ -30,17 +32,19 @@ then
 
 else
   # we choose libopenh264 instead of x264 to make this LGPL
-  # these codecs are not supported for win-64 at the moment
+  # we don't have these packages for win
   _CONFIG_OPTS+=("--enable-libopenh264")
   _CONFIG_OPTS+=("--enable-libopus")
+  _CONFIG_OPTS+=("--enable-libmp3lame")
+  # Our win packages don't have .pc files for these
   _CONFIG_OPTS+=("--enable-libopenjpeg")
   _CONFIG_OPTS+=("--enable-libvorbis")
-  _CONFIG_OPTS+=("--enable-libmp3lame")
+  # we don't want pthreads on win, it's not posix compliant
   _CONFIG_OPTS+=("--enable-pthreads")
 fi
 
 
-if [[ ${target_platform} == linux-64 ]] || [[ ${target_platform} == linux-aarch64 ]]
+if [[ ${target_platform} != linux-s390x ]] && [[ ${target_platform} != win-64 ]]
 then
   # we don't have a tesseract or libvpx for win or s390x
   _CONFIG_OPTS+=("--enable-libtesseract")
@@ -50,12 +54,8 @@ fi
 
 if [[ ${target_platform} == osx-64 ]] || [[ ${target_platform} == osx-arm64 ]]
 then
-    # on other platform pkg-config doesn't find xau which is supposedly in the dependency chain of librsvg
+  # on other platform pkg-config doesn't find xau which is supposedly in the dependency chain of librsvg
   _CONFIG_OPTS+=("--enable-librsvg")
-  # not supported on osx-*
-  _CONFIG_OPTS+=("--enable-libtesseract")
-  # libvpx not supported on s390x and win-64
-  _CONFIG_OPTS+=("--enable-libvpx")
 fi
 
 # common flags to all platforms
