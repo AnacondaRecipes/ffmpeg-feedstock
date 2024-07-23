@@ -5,41 +5,8 @@ unset SUBDIR
 
 declare -a _CONFIG_OPTS=()
 
-if [[ ${target_platform} != win-64 ]]
+if [[ ${target_platform} == win-64 ]]
 then
-  ##### For platforms LINUX-*, OSX-* #####
-
-  # we choose libopenh264 instead of x264 to make this LGPL
-  # these codecs are not supported for win-64 at the moment
-  _CONFIG_OPTS+=("--enable-libopenh264")
-  _CONFIG_OPTS+=("--enable-libopus")
-  _CONFIG_OPTS+=("--enable-libopenjpeg")
-  _CONFIG_OPTS+=("--enable-libvorbis")
-  _CONFIG_OPTS+=("--enable-libmp3lame")
-  _CONFIG_OPTS+=("--enable-pthreads")
-
-  ##### For platforms LINUX-64, LINUX-AARCH64
-  if [[ ${target_platform} == linux-64 ]] || [[ ${target_platform} == linux-aarch64 ]]
-  then
-     # libtesseract not supported on s390x and win-64
-    _CONFIG_OPTS+=("--enable-libtesseract")
-    # libvpx not supported on s390x and win-64
-    _CONFIG_OPTS+=("--enable-libvpx")
-  fi
-
-  ##### For platforms OSX-*          #####
-  if [[ ${target_platform} == osx-64 ]] || [[ ${target_platform} == osx-arm64 ]]
-  then
-     # on other platform pkg-config doesn't find xau which is supposedly in the dependency chain of librsvg
-    _CONFIG_OPTS+=("--enable-librsvg")
-    # not supported on osx-*
-    _CONFIG_OPTS+=("--enable-libtesseract")
-    # libvpx not supported on s390x and win-64
-    _CONFIG_OPTS+=("--enable-libvpx")
-  fi
-
-##### For platforms WIN-64           #####
-else
   _CONFIG_OPTS+=("--ld=${LD}")
   _CONFIG_OPTS+=("--target-os=win64")
   _CONFIG_OPTS+=("--toolchain=msvc")
@@ -60,20 +27,48 @@ else
       UNISTD_CREATED=1
       touch "${PREFIX}/include/unistd.h"
   fi
+
+else
+  # we choose libopenh264 instead of x264 to make this LGPL
+  # these codecs are not supported for win-64 at the moment
+  _CONFIG_OPTS+=("--enable-libopenh264")
+  _CONFIG_OPTS+=("--enable-libopus")
+  _CONFIG_OPTS+=("--enable-libopenjpeg")
+  _CONFIG_OPTS+=("--enable-libvorbis")
+  _CONFIG_OPTS+=("--enable-libmp3lame")
+  _CONFIG_OPTS+=("--enable-pthreads")
 fi
 
-# configure AR, RANLIB, STRIP and co. since they are not always automatically detected
-_CONFIG_OPTS+=("--ar=${AR}")
-_CONFIG_OPTS+=("--nm=${NM}")
-_CONFIG_OPTS+=("--ranlib=${RANLIB}")
-_CONFIG_OPTS+=("--strip=${STRIP}")
+
+if [[ ${target_platform} == linux-64 ]] || [[ ${target_platform} == linux-aarch64 ]]
+then
+  # we don't have a tesseract or libvpx for win or s390x
+  _CONFIG_OPTS+=("--enable-libtesseract")
+  _CONFIG_OPTS+=("--enable-libvpx")
+fi
+
+
+if [[ ${target_platform} == osx-64 ]] || [[ ${target_platform} == osx-arm64 ]]
+then
+    # on other platform pkg-config doesn't find xau which is supposedly in the dependency chain of librsvg
+  _CONFIG_OPTS+=("--enable-librsvg")
+  # not supported on osx-*
+  _CONFIG_OPTS+=("--enable-libtesseract")
+  # libvpx not supported on s390x and win-64
+  _CONFIG_OPTS+=("--enable-libvpx")
+fi
 
 # common flags to all platforms
 # openssl: as of OpenSSL 3, the license is Apache-2.0 so we can enable this
 # disable-static: we generally favor shared library binaries than static
+# configure AR, RANLIB, STRIP and co. since they are not always automatically detected
 ./configure \
         --prefix="${PREFIX}" \
         --cc=${CC} \
+        --ar=${AR} \
+        --nm=${NM} \
+        --ranlib=${RANLIB} \
+        --strip=${STRIP} \
         --disable-doc \
         --enable-swresample \
         --enable-swscale \
