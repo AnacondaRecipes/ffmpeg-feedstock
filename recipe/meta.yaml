@@ -12,6 +12,8 @@ package:
 source:
   url: https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n{{ version }}.tar.gz
   sha256: 7c1ebea95d815e49c1e60c7ee816410dec73a81b8ac002b276780d2f9048e598
+  patches:
+    - patches/0001-use-include-path-of-our-libxml2.patch # [win]
 
 build:
   number: 0
@@ -30,6 +32,7 @@ requirements:
     - libtool  # [not win]
     - nasm  # [win or (osx and x86_64) or (linux and (not s390x))]
     - make  # [not win]
+    - m2-patch  # [win]
   host:
     - aom         3.6.0
     - bzip2       {{ bzip2 }}
