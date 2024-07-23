@@ -12,6 +12,10 @@ package:
 source:
   url: https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n{{ version }}.tar.gz
   sha256: 7c1ebea95d815e49c1e60c7ee816410dec73a81b8ac002b276780d2f9048e598
+  # This patch can be removed once the fix below is merged and uploaded,
+  # the libxml2 2.13.1 buildout is done, and the libxml2 aggregate pinning
+  # has been updated.
+  # https://github.com/AnacondaRecipes/libxml2-feedstock/pull/16
   patches:
     - patches/0001-use-include-path-of-our-libxml2.patch # [win]
 
