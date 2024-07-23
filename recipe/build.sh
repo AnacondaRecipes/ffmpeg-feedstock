@@ -87,6 +87,7 @@ fi
         --enable-pic \
         --enable-shared \
         --disable-static \
+        --disable-gpl \
         --enable-version3 \
         --disable-sdl2 \
         "${_CONFIG_OPTS[@]}"
