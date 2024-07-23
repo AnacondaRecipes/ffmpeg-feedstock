@@ -1,1 +1,6 @@
-aggregate_check: false
+# libxml 2.13.1 has a fixed include path on Windows.
+# when libxml2 is updated to 2.13.1 in aggregate cbc.yaml,
+# this can be removed
+aggregate_branch: libxml_2.13.1
+channels:
+  - https://staging.continuum.io/prefect/fs/libxml2-feedstock/pr16/4ee69c7
