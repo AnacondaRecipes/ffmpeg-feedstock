@@ -21,7 +21,7 @@ build:
     - libcxx
     # these seems to be overdepending only on linux
     - libstdcxx-ng  # [linux]
-    # this seems to be statically linked only on osx
+    - aom           # [win]
 
 requirements:
   build:
@@ -32,40 +32,36 @@ requirements:
     - libtool  # [not win]
     - nasm  # [win or (osx and x86_64) or (linux and (not s390x))]
     - make  # [not win]
-    - patch  # [not win]
     - m2-patch  # [win]
   host:
-    - aom
-    - bzip2
-    - dav1d
-    - freetype
-    - fontconfig
-    - harfbuzz
-    - libiconv
-    - zlib
-    - openh264  # [not win]
-    - openjpeg >=2.1.0   # [not win]
-    - librsvg  # [osx]
-    - libtheora
-    - libvorbis # [not win]
-    - libxml2
-    - tesseract  # [not (win or s390x)]
-    - lame  # [not win]
-    - libvpx  # [not (win or s390x)]
-    - libopus # [not win]
-    - openssl
-  run:
-    - lame  # [not win]
-    - xz
-    - libglib  # [osx]
-    - cairo  # [not win]
-    - libiconv
+    - aom         3.6.0
+    - bzip2       {{ bzip2 }}
+    - dav1d       1.2.1
+    - freetype    {{ freetype }}
+    - fontconfig  {{ fontconfig }}
+    - harfbuzz    {{ harfbuzz }}
+    - libiconv    1.16
+    - zlib        {{ zlib }}
+    - openh264    2.1.1           # [not win]
+    - openjpeg    {{ openjpeg }}  # [not win]
+    - librsvg     2.54.4          # [osx]
+    - libtheora   1.1.1
+    - libvorbis   1.3.7           # [not win]
+    - libxml2     {{ libxml2 }}
+    - tesseract   5.2.0           # [not (win or s390x)]
+    - lame        3.100           # [not win]
+    - libvpx      1.13.1          # [not (win or s390x)]
+    - libopus     1.3             # [not win]
+    - openssl     {{ openssl }}
+    - xz          5.4.6
+    - libglib     2.78.4          # [osx]
+    - cairo       1.16.0          # [osx]
 
 test:
   commands:
     - ffmpeg --help
-    - ffmpeg -loglevel panic -protocols | grep "https"  # [not win]
-    - ffmpeg -loglevel panic -codecs | grep "libmp3lame"  # [not win]
+    - ffmpeg -loglevel panic -protocols | grep "https"     # [not win]
+    - ffmpeg -loglevel panic -codecs | grep "libmp3lame"   # [not win]
     - ffmpeg -loglevel panic -codecs | grep "DEVI.S zlib"  # [not win]
     - ffmpeg -loglevel panic -codecs | grep "DEV.LS h264"  # [not (win or s390x)]
     - ffmpeg -loglevel panic -codecs | grep "libopenh264"  # [not win]
@@ -117,7 +113,3 @@ extra:
     - ocefpaf
     - patricksnape
     - sdvillal
-  skip-lints:
-    - cbc_dep_in_run_missing_from_host
-    - host_section_needs_exact_pinnings
-    - patch_unnecessary
