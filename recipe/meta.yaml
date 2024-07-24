@@ -21,6 +21,10 @@ source:
 
 build:
   number: 0
+  run_exports:
+    # ABI is not broken between minor versions
+    # https://ffmpeg.org/developer.html#Library-public-interfaces
+    - {{ pin_subpackage('ffmpeg', max_pin='x') }}
   ignore_run_exports:
     - libcxx
     # these seems to be overdepending only on linux
