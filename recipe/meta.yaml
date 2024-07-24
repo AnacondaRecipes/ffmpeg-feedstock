@@ -92,10 +92,10 @@ test:
 
 about:
   home: https://www.ffmpeg.org
-  license: GPL-2.0-or-later AND GPL-3.0-or-later AND LGPL-3.0-or-later
+  license: LGPL-3.0-or-later
   license_file:
     - COPYING.LGPLv3
-  license_family: OTHER
+  license_family: LGPL
   summary: Cross-platform solution to record, convert and stream audio and video.
   description: |
     FFmpeg is a free and open-source software project consisting of a suite of libraries and programs for handling

@@ -17,7 +17,7 @@ then
   # ffmpeg by default attempts to link to libm
   # but that doesn't exist for windows
   _CONFIG_OPTS+=("--host-extralibs=")
-  # we don't want pthreads on win, it's not posix compliant
+  # pthreads doesn't exist on windows (without relying on msys2, etc)
   _CONFIG_OPTS+=("--disable-pthreads")
   _CONFIG_OPTS+=("--enable-w32threads")
   # manually include the runtime libs
