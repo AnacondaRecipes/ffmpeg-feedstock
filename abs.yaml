@@ -1,4 +1,4 @@
-channels:
-  danielpetry: dp_test
+upload_channels:
+  - dp_test
 
 upload_without_merge: True
