@@ -1,10 +1,7 @@
 channels:
   - dp_test
-  - https://staging.continuum.io/prefect/fs/libxml2-feedstock/pr17/1c2e862
 
 upload_without_merge: True
-
-aggregate_branch: libxml_2.13.1
 
 # don't skip existing while uploading to anaconda.org
 build_parameters:
