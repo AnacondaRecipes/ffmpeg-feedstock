@@ -1,6 +1,5 @@
 channels:
   - dp_test
-  - https://staging.continuum.io/prefect/fs/libxml2-feedstock/pr17/1c2e862
 
 upload_without_merge: True
 
