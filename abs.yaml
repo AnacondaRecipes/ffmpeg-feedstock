@@ -3,3 +3,8 @@ channels:
   - https://staging.continuum.io/prefect/fs/libxml2-feedstock/pr17/1c2e862
 
 upload_without_merge: True
+
+# don't skip existing while uploading to anaconda.org
+build_parameters:
+  - "--suppress-variables"
+  - "--error-overlinking"
