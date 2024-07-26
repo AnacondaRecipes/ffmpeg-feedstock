@@ -1,9 +1,5 @@
 {% set name = "ffmpeg" %}
 {% set version = "6.1.1" %}
-# win specific vars
-{% set version_majmin = '.'.join(version.split('.', 2)[:2]) %}
-{% set release_date = "2023-12-31" %}
-{% set release_time = "12-55" %}
 
 package:
   name: {{ name }}

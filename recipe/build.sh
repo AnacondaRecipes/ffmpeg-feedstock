@@ -39,7 +39,6 @@ else
   # Our win packages don't have .pc files for these
   _CONFIG_OPTS+=("--enable-libopenjpeg")
   _CONFIG_OPTS+=("--enable-libvorbis")
-  # we don't want pthreads on win, it's not posix compliant
   _CONFIG_OPTS+=("--enable-pthreads")
 fi
 

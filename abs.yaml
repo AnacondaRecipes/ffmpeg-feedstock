@@ -1,4 +1,4 @@
-upload_channels:
+channels:
   - dp_test
 
 upload_without_merge: True
