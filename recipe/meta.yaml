@@ -1,88 +1,105 @@
-{% set version = "4.2.2" %}
+{% set name = "ffmpeg" %}
+{% set version = "6.1.1" %}
 
 package:
-  name: ffmpeg
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  - url: https://ffmpeg.org/releases/ffmpeg-{{ version }}.tar.gz  # [not win]
-    sha256: 83f9a9aa0acf8036daf47494d99a8c31154a18ebb6841d89878ba47783559bd0  # [not win]
-
-  - url: https://ffmpeg.zeranoe.com/builds/win64/shared/ffmpeg-{{ version }}-win64-shared.zip  # [win]
-    sha256: 5aedf268952b7d9f6541dbfcb47cd86a7e7881a3b7ba482fd3bc4ca33bda7bf5  # [win]
-
-  - url: https://ffmpeg.zeranoe.com/builds/win64/dev/ffmpeg-{{ version }}-win64-dev.zip  # [win]
-    sha256: f4885f859c5b0d6663c2a0a4c1cf035b1c60b146402790b796bd3ad84f4f3ca2  # [win]
+  url: https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n{{ version }}.tar.gz
+  sha256: 7c1ebea95d815e49c1e60c7ee816410dec73a81b8ac002b276780d2f9048e598
+  # This patch can be removed once the fix below is merged and uploaded,
+  # the libxml2 2.13.1 buildout is done, and the libxml2 aggregate pinning
+  # has been updated.
+  # https://github.com/AnacondaRecipes/libxml2-feedstock/pull/16
+  patches:
+    - patches/0001-use-include-path-of-our-libxml2.patch # [win]
+    - patches/pkgconfig_generate_windows_llvm.patch  # [win]
 
 build:
   number: 0
-  # The windows build is repacking binaries rather than building from source
   run_exports:
-  # seems to be minor version compatibility
-  # https://abi-laboratory.pro/tracker/timeline/ffmpeg/
-    - {{ pin_subpackage('ffmpeg', max_pin='x.x') }}
-  missing_dso_whitelist:  # [osx]
-    - /System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox  # [osx]
+    # ABI is not broken between minor versions
+    # https://ffmpeg.org/developer.html#Library-public-interfaces
+    - {{ pin_subpackage('ffmpeg', max_pin='x') }}
+  ignore_run_exports:
+    - libcxx
+    # these seems to be overdepending only on linux
+    - libstdcxx-ng  # [linux]
+    - aom           # [win]
 
 requirements:
   build:
     - {{ compiler("c") }}
     - {{ compiler("cxx") }}
-    - pkg-config  # [not win]
+    - autotools_clang_conda  # [win]
+    - pkg-config
     - libtool  # [not win]
-    - nasm  # [(osx and x86_64) or linux32 or linux64]
+    - nasm  # [win or (osx and x86_64) or (linux and (not s390x))]
     - make  # [not win]
+    - m2-patch  # [win]
   host:
-    - bzip2  # [not win]
-    - freetype  # [not win]
-    - gnutls  # [not win]
-    - libiconv  # [not win and not linux]
-    - x264  # [not win]
-    - zlib  # [not win]
-    - openh264  # [not win]
-    - lame  # [not win]
-    - gmp  # [unix]
-    - libvpx  # [not win]
-    - libopus # [not win]
-    - openssl # [not win]
-  run:
-    - lame  # [not win]
+    - aom         3.6.0
+    - bzip2       {{ bzip2 }}
+    - dav1d       1.2.1
+    - freetype    {{ freetype }}
+    - fontconfig  {{ fontconfig }}
+    - harfbuzz    {{ harfbuzz }}
+    - libiconv    1.16
+    - zlib        {{ zlib }}
+    - openh264    2.1.1           # [not win]
+    - openjpeg    {{ openjpeg }}  # [not win]
+    - librsvg     2.54.4          # [osx]
+    - libtheora   1.1.1
+    - libvorbis   1.3.7           # [not win]
+    - libxml2     {{ libxml2 }}
+    - tesseract   5.2.0           # [not (win or s390x)]
+    - lame        3.100           # [not win]
+    - libvpx      1.13.1          # [not (win or s390x)]
+    - libopus     1.3             # [not win]
+    - openssl     {{ openssl }}
+    - xz          5.4.6
+    - libglib     2.78.4          # [osx]
+    - cairo       1.16.0          # [osx]
 
 test:
   commands:
     - ffmpeg --help
-    - ffmpeg -loglevel panic -codecs
-    - ffmpeg -loglevel panic -protocols | grep "https"  # [not win]
-    - ffmpeg -loglevel panic -codecs | grep "libmp3lame"  # [not win]
-    - ffmpeg -loglevel panic -codecs | grep "DEVI.S zlib"  # [unix]
-    - ffmpeg -loglevel panic -codecs | grep "DEV.LS h264"  # [linux64 or osx64]
-    - ffmpeg -loglevel panic -codecs | grep "D.V.LS h264"  # [ppc64le]
-    - ffmpeg -loglevel panic -codecs | grep "libx264"  # [linux64 or osx64]
-    - ffmpeg -loglevel panic -codecs | grep "libopenh264"  # [linux64 or osx64]
+    - ffmpeg -loglevel panic -protocols | grep "https"     # [not win]
+    - ffmpeg -loglevel panic -codecs | grep "libmp3lame"   # [not win]
+    - ffmpeg -loglevel panic -codecs | grep "DEVI.S zlib"  # [not win]
+    - ffmpeg -loglevel panic -codecs | grep "DEV.LS h264"  # [not (win or s390x)]
+    - ffmpeg -loglevel panic -codecs | grep "libopenh264"  # [not win]
     # Verify dynamic libraries on all systems
     {% set ffmpeg_libs = [
         "avcodec",
         "avdevice",
         "swresample",
-        "postproc",
         "avfilter",
-        "swresample",
         "avcodec",
         "avformat",
-        "swscale",
-        "avresample"
+        "swscale"
     ] %}
     {% for each_ffmpeg_lib in ffmpeg_libs %}
-    - test -f $PREFIX/lib/lib{{ each_ffmpeg_lib }}.dylib  # [osx]
-    - test -f $PREFIX/lib/lib{{ each_ffmpeg_lib }}.so     # [linux]
+    - test -f $CONDA_PREFIX/lib/lib{{ each_ffmpeg_lib }}.dylib  # [osx]
+    - test -f $CONDA_PREFIX/lib/lib{{ each_ffmpeg_lib }}.so     # [linux]
+    - if not exist %PREFIX%\Library\bin\{{ each_ffmpeg_lib }}*.dll exit 1  # [win]
+    - if not exist %PREFIX%\Library\bin\{{ each_ffmpeg_lib }}.lib exit 1  # [win]
     {% endfor %}
 
 about:
-  home: http://www.ffmpeg.org/
-  license: GPL 3
-  license_file: COPYING.GPLv3  # [unix]
+  home: https://www.ffmpeg.org
+  license: LGPL-3.0-or-later
+  license_file:
+    - COPYING.LGPLv3
+  license_family: LGPL
   summary: Cross-platform solution to record, convert and stream audio and video.
-  dev_url: https://ffmpeg.org/developer.html
+  description: |
+    FFmpeg is a free and open-source software project consisting of a suite of libraries and programs for handling
+    video, audio, and other multimedia files and streams. At its core is the command-line ffmpeg tool itself, designed
+    for processing of video and audio files. It is widely used for format transcoding, basic editing (trimming and
+    concatenation), video scaling, video post-production effects and standards compliance (SMPTE, ITU).
+  dev_url: https://git.ffmpeg.org/gitweb/ffmpeg.git
   doc_url: https://ffmpeg.org/documentation.html
 
 extra:
