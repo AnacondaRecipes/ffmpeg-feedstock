@@ -1,9 +1,0 @@
-channels:
-  - dp_test
-
-upload_without_merge: True
-
-# don't skip existing while uploading to anaconda.org
-build_parameters:
-  - "--suppress-variables"
-  - "--error-overlinking"
