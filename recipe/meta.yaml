@@ -24,6 +24,8 @@ build:
     - {{ pin_subpackage('ffmpeg', max_pin='x') }}
   ignore_run_exports:
     - libcxx
+    # we don't want tight pinning in the run section for libglib and glib
+    - libglib       # [osx]
     # these seems to be overdepending only on linux
     - libstdcxx-ng  # [linux]
     - aom           # [win]
