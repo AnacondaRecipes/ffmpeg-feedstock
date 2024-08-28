@@ -52,7 +52,7 @@ requirements:
     - librsvg     2.54.4          # [osx]
     - libtheora   1.1.1
     - libvorbis   1.3.7           # [not win]
-    - libxml2     2.10
+    - libxml2     {{ libxml2 }}
     - tesseract   5.2.0           # [not (win or s390x)]
     - lame        3.100           # [not win]
     - libvpx      1.13.1          # [not (win or s390x)]
