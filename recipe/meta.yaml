@@ -60,7 +60,7 @@ requirements:
     - openssl     {{ openssl }}
     - xz          5.4.6
     - libglib     2.78.4          # [osx]
-    - cairo       {{ cairo }}          # [osx]
+    - cairo       {{ cairo }}     # [osx]
 
 test:
   commands:
