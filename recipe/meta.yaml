@@ -17,7 +17,7 @@ source:
     - patches/pkgconfig_generate_windows_llvm.patch  # [win]
 
 build:
-  number: 3
+  number: 4
   run_exports:
     # ABI is not broken between minor versions
     # https://ffmpeg.org/developer.html#Library-public-interfaces
@@ -30,12 +30,13 @@ build:
 
 requirements:
   build:
+    - {{ stdlib("c") }}
     - {{ compiler("c") }}
     - {{ compiler("cxx") }}
     - autotools_clang_conda  # [win]
     - pkg-config
     - libtool  # [not win]
-    - nasm  # [win or (osx and x86_64) or (linux and (not s390x))]
+    - nasm
     - make  # [not win]
     - m2-patch  # [win]
   host:
@@ -50,17 +51,37 @@ requirements:
     - openh264    2.1.1           # [not win]
     - openjpeg    {{ openjpeg }}  # [not win]
     - librsvg     2.56.3          # [osx]
-    - libtheora   1.1.1
+    - libtheora   1.2.0
     - libvorbis   1.3.7           # [not win]
     - libxml2     {{ libxml2 }}
-    - tesseract   5.2.0           # [not (win or s390x)]
+    - tesseract   5.2.0           # [not win]
     - lame        3.100           # [not win]
-    - libvpx      1.13.1          # [not (win or s390x)]
+    - libvpx      1.13.1          # [not win]
     - libopus     1.3             # [not win]
     - openssl     {{ openssl }}
     - xz          5.4.6
     - libglib     2.78.4          # [osx]
     - cairo       {{ cairo }}     # [osx]
+  run:
+    - aom                        # pinned through run_exports
+    - bzip2                      # pinned through run_exports
+    - dav1d                      # pinned through run_exports
+    - freetype                   # pinned through run_exports
+    - fontconfig                 # pinned through run_exports
+    - harfbuzz                   # pinned through run_exports
+    - libiconv                   # pinned through run_exports
+    - zlib                       # pinned through run_exports
+    - openh264                   # pinned through run_exports
+    - openjpeg                   # pinned through run_exports
+    - libtheora                  # pinned through run_exports
+    - libvorbis                  # pinned through run_exports
+    - libxml2                    # pinned through run_exports
+    - tesseract                  # pinned through run_exports
+    - lame                       # pinned through run_exports
+    - libvpx                     # pinned through run_exports
+    - libopus                    # pinned through run_exports
+    - openssl                    # pinned through run_exports
+    - xz                         # pinned through run_exports
 
 test:
   commands:
@@ -81,8 +102,7 @@ test:
         "swscale"
     ] %}
     {% for each_ffmpeg_lib in ffmpeg_libs %}
-    - test -f $CONDA_PREFIX/lib/lib{{ each_ffmpeg_lib }}.dylib  # [osx]
-    - test -f $CONDA_PREFIX/lib/lib{{ each_ffmpeg_lib }}.so     # [linux]
+    - test -f $CONDA_PREFIX/lib/lib{{ each_ffmpeg_lib }}${SHLIB_EXT} # [not win]
     - if not exist %PREFIX%\Library\bin\{{ each_ffmpeg_lib }}*.dll exit 1  # [win]
     - if not exist %PREFIX%\Library\bin\{{ each_ffmpeg_lib }}.lib exit 1  # [win]
     {% endfor %}
