@@ -34,30 +34,30 @@ then
       touch "${PREFIX}/include/unistd.h"
   fi
 
-  # --- makedef hotfix & diagnostics (Windows only) ---
-  echo "[diag] show makedef (first 80 lines) BEFORE fixes"
-  head -n 80 compat/windows/makedef || true
+  # # --- makedef hotfix & diagnostics (Windows only) ---
+  # echo "[diag] show makedef (first 80 lines) BEFORE fixes"
+  # head -n 80 compat/windows/makedef || true
 
-  echo "[diag] SHA256:"
-  sha256sum compat/windows/makedef || true
+  # echo "[diag] SHA256:"
+  # sha256sum compat/windows/makedef || true
 
-  echo "[diag] check printf availability"
-  type -a printf || which printf || echo "NO_PRINTF"
+  # echo "[diag] check printf availability"
+  # type -a printf || which printf || echo "NO_PRINTF"
 
-  # normalize CRLF -> LF
-  sed -i 's/\r$//' compat/windows/makedef
+  # # normalize CRLF -> LF
+  # sed -i 's/\r$//' compat/windows/makedef
 
-  # strip a leading '@' before any command token (e.g. '@printf' -> 'printf')
-  sed -i 's/^[[:space:]]*@\([A-Za-z_]\)/\1/' compat/windows/makedef
+  # # strip a leading '@' before any command token (e.g. '@printf' -> 'printf')
+  # sed -i 's/^[[:space:]]*@\([A-Za-z_]\)/\1/' compat/windows/makedef
 
-  echo "[diag] show makedef (first 80 lines) AFTER fixes"
-  head -n 80 compat/windows/makedef || true
+  # echo "[diag] show makedef (first 80 lines) AFTER fixes"
+  # head -n 80 compat/windows/makedef || true
 
-  # optional: verify there is no '@printf' left anywhere
-  if grep -RInE '^[[:space:]]*@printf\b' compat/windows/makedef >/dev/null 2>&1; then
-    echo "[error] @printf still present after fix" >&2
-    exit 1
-  fi
+  # # optional: verify there is no '@printf' left anywhere
+  # if grep -RInE '^[[:space:]]*@printf\b' compat/windows/makedef >/dev/null 2>&1; then
+  #   echo "[error] @printf still present after fix" >&2
+  #   exit 1
+  # fi
 
 else
   # we choose libopenh264 instead of x264 to make this LGPL
@@ -121,57 +121,16 @@ fi
         "${_CONFIG_OPTS[@]}"
 
 
-if [[ ${target_platform} == win-64 ]]
-then
-  # --- makedef hotfix & diagnostics (Windows only) ---
-  echo "======================================================================="
-  echo "[diag-post-config] HEAD makedef (raw):"
-  grep -n --color=always 'printf' compat/windows/makedef || echo "no matches"
-  head -n 80 compat/windows/makedef || true
-  
-  echo "[diag-post-config] SHA256:"
-  sha256sum compat/windows/makedef || true
-
-  sed -i 's/\r$//' compat/windows/makedef || true
-  sed -i 's/^[[:space:]]*@\([A-Za-z_]\)/\1/' compat/windows/makedef || true
-
-  if ! grep -q '^set -x' compat/windows/makedef; then
-    sed -i '1a set -x' compat/windows/makedef
-  fi
-
-  echo "[diag-post-fix] ensure no '@printf' left:"
-  if grep -RInE '^[[:space:]]*@printf\b' compat/windows/makedef >/dev/null 2>&1; then
-    echo "[error] @printf still present after post-config fix" >&2
-    exit 1
-  fi
-
-  echo "[diag] test printf:"
-  printf "OK from printf\n"
-
-  echo "[diag] printf availability in bash:"
-  type -a printf || which printf || echo "NO_PRINTF"
-
-  echo "[diag]======AR_CMD"
-  echo "${AR_CMD}"
-
-  echo "======================================================================="
-
-fi
-
 if [[ ${target_platform} == win-64 ]]; then
   echo "======================================================================="
-  [[ -f config.mak ]] || { echo "[err] config.mak not found"; exit 1; }
-
-  sed -E -i 's/^AR_CMD=.*/AR_CMD=llvm-ar/' config.mak
-  sed -E -i 's/^NM_CMD=.*/NM_CMD=llvm-nm -g/' config.mak
-
   echo "[diag] grep AR_CMD/NM_CMD in config.mak:"
   grep -E '^(AR_CMD|NM_CMD)=' config.mak || true
+  head -n 80 compat/windows/makedef || true
   echo "======================================================================="
 fi
 
-  make -j${CPU_COUNT} ${VERBOSE_AT}
-  make install -j${CPU_COUNT} ${VERBOSE_AT}
+make -j${CPU_COUNT} ${VERBOSE_AT}
+make install -j${CPU_COUNT} ${VERBOSE_AT}
 
 if [[ "${target_platform}" == win-* ]]; then
   if [[ "${UNISTD_CREATED}" == "1" ]]; then

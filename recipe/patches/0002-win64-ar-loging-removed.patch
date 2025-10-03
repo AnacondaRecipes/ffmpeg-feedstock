@@ -1,0 +1,26 @@
+diff --git a/compat/windows/makedef b/compat/windows/makedef
+index add8222..a59de36 100755
+--- a/compat/windows/makedef
++++ b/compat/windows/makedef
+@@ -45,6 +45,21 @@ libname=$(mktemp -u "library").lib
+ 
+ trap 'rm -f -- $libname' EXIT
+ 
++
++# --- sanitize AR/NM ---------------------------------------------------------
++# Some Windows toolchains wrap AR/NM with a logging prefix like:
++#   @printf "AR\t%s\n" libavutil/avutil-58.dll; llvm-ar
++# When makedef executes "$AR rcs ...", /bin/sh tries to run the command
++# "@printf" which does not exist. Strip any prefix up to the last ';'
++# and trim leading whitespace, leaving the real binary (e.g. llvm-ar/llvm-nm).
++case "$AR" in *";"*) AR=${AR##*;} ;; esac
++set -- $AR; AR=$1
++
++case "$NM" in *";"*) NM=${NM##*;} ;; esac
++set -- $NM; NM=$1
++# ----------------------------------------
++
++
+ if [ -n "$AR" ]; then
+     $AR rcs ${libname} $@ >/dev/null
+ else

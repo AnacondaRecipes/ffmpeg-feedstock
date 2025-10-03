@@ -15,6 +15,7 @@ source:
   patches:
     - patches/0001-use-include-path-of-our-libxml2.patch # [win]
     - patches/pkgconfig_generate_windows_llvm.patch  # [win]
+    - patches/0002-win64-ar-loging-removed.patch     # [win]
 
 build:
   number: 4
