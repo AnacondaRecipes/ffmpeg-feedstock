@@ -34,6 +34,28 @@ then
       touch "${PREFIX}/include/unistd.h"
   fi
 
+  # --- makedef hotfix & diagnostics (Windows only) ---
+  echo "[diag] show makedef (first 80 lines) BEFORE fixes"
+  head -n 80 compat/windows/makedef || true
+
+  echo "[diag] check printf availability"
+  type -a printf || which printf || echo "NO_PRINTF"
+
+  # normalize CRLF -> LF
+  sed -i 's/\r$//' compat/windows/makedef
+
+  # strip a leading '@' before any command token (e.g. '@printf' -> 'printf')
+  sed -i 's/^[[:space:]]*@\([A-Za-z_]\)/\1/' compat/windows/makedef
+
+  echo "[diag] show makedef (first 80 lines) AFTER fixes"
+  head -n 80 compat/windows/makedef || true
+
+  # optional: verify there is no '@printf' left anywhere
+  if grep -RInE '^[[:space:]]*@printf\b' compat/windows/makedef >/dev/null 2>&1; then
+    echo "[error] @printf still present after fix" >&2
+    exit 1
+  fi
+
 else
   # we choose libopenh264 instead of x264 to make this LGPL
   # we don't have these packages for win
