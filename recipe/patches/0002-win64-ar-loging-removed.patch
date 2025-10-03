@@ -14,10 +14,14 @@ index add8222..a59de36 100755
 +# "@printf" which does not exist. Strip any prefix up to the last ';'
 +# and trim leading whitespace, leaving the real binary (e.g. llvm-ar/llvm-nm).
 +case "$AR" in *";"*) AR=${AR##*;} ;; esac
-+set -- $AR; AR=$1
++# trim leading spaces
++while [ "${AR# }" != "$AR" ]; do AR=${AR# }; done
++# keep first token only
++AR=${AR%% *}
 +
 +case "$NM" in *";"*) NM=${NM##*;} ;; esac
-+set -- $NM; NM=$1
++while [ "${NM# }" != "$NM" ]; do NM=${NM# }; done
++NM=${NM%% *}
 +# ----------------------------------------
 +
 +
