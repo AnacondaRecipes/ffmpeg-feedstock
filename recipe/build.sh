@@ -38,6 +38,9 @@ then
   echo "[diag] show makedef (first 80 lines) BEFORE fixes"
   head -n 80 compat/windows/makedef || true
 
+  echo "[diag] SHA256:"
+  sha256sum compat/windows/makedef || true
+
   echo "[diag] check printf availability"
   type -a printf || which printf || echo "NO_PRINTF"
 
@@ -125,6 +128,10 @@ then
   echo "[diag-post-config] HEAD makedef (raw):"
   grep -n --color=always 'printf' compat/windows/makedef || echo "no matches"
   head -n 80 compat/windows/makedef || true
+  
+  echo "[diag-post-config] SHA256:"
+  sha256sum compat/windows/makedef || true
+
   sed -i 's/\r$//' compat/windows/makedef || true
   sed -i 's/^[[:space:]]*@\([A-Za-z_]\)/\1/' compat/windows/makedef || true
 
@@ -138,15 +145,25 @@ then
     exit 1
   fi
 
+  echo "[diag] test printf:"
+  printf "OK from printf\n"
+
   echo "[diag] printf availability in bash:"
   type -a printf || which printf || echo "NO_PRINTF"
+
+  echo "[diag]======AR_CMD"
+  echo $(AR_CMD)
 
   echo "======================================================================="
 
 fi
 
-make -j${CPU_COUNT} ${VERBOSE_AT}
-make install -j${CPU_COUNT} ${VERBOSE_AT}
+
+make AR_CMD=ar NM_CMD="nm" -j${CPU_COUNT} ${VERBOSE_AT}
+make AR_CMD=ar NM_CMD="nm" install -j${CPU_COUNT} ${VERBOSE_AT}
+
+# make -j${CPU_COUNT} ${VERBOSE_AT}
+# make install -j${CPU_COUNT} ${VERBOSE_AT}
 
 
 if [[ "${target_platform}" == win-* ]]; then
