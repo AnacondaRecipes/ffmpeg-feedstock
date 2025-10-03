@@ -1,8 +1,8 @@
 diff --git a/compat/windows/makedef b/compat/windows/makedef
-index add8222..a59de36 100755
+index add8222..3ebdf80 100755
 --- a/compat/windows/makedef
 +++ b/compat/windows/makedef
-@@ -45,6 +45,21 @@ libname=$(mktemp -u "library").lib
+@@ -45,6 +45,27 @@ libname=$(mktemp -u "library").lib
  
  trap 'rm -f -- $libname' EXIT
  
@@ -13,6 +13,7 @@ index add8222..a59de36 100755
 +# When makedef executes "$AR rcs ...", /bin/sh tries to run the command
 +# "@printf" which does not exist. Strip any prefix up to the last ';'
 +# and trim leading whitespace, leaving the real binary (e.g. llvm-ar/llvm-nm).
++
 +case "$AR" in *";"*) AR=${AR##*;} ;; esac
 +# trim leading spaces
 +while [ "${AR# }" != "$AR" ]; do AR=${AR# }; done
@@ -22,7 +23,8 @@ index add8222..a59de36 100755
 +case "$NM" in *";"*) NM=${NM##*;} ;; esac
 +while [ "${NM# }" != "$NM" ]; do NM=${NM# }; done
 +NM=${NM%% *}
-+# ----------------------------------------
++# -----------------------------------------------
++
 +
 +
  if [ -n "$AR" ]; then
