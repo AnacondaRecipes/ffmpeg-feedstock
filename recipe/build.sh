@@ -159,13 +159,19 @@ then
 fi
 
 if [[ ${target_platform} == win-64 ]]; then
-  make AR_CMD=llvm-ar NM_CMD="llvm-nm -g" -j${CPU_COUNT} ${VERBOSE_AT}
-  make AR_CMD=llvm-ar NM_CMD="llvm-nm -g" install -j${CPU_COUNT} ${VERBOSE_AT}
-else
-  make -j${CPU_COUNT} ${VERBOSE_AT}
-  make install -j${CPU_COUNT} ${VERBOSE_AT}
+  echo "======================================================================="
+  [[ -f config.mak ]] || { echo "[err] config.mak not found"; exit 1; }
+
+  sed -E -i 's/^AR_CMD=.*/AR_CMD=llvm-ar/' config.mak
+  sed -E -i 's/^NM_CMD=.*/NM_CMD=llvm-nm -g/' config.mak
+
+  echo "[diag] grep AR_CMD/NM_CMD in config.mak:"
+  grep -E '^(AR_CMD|NM_CMD)=' config.mak || true
+  echo "======================================================================="
 fi
 
+  make -j${CPU_COUNT} ${VERBOSE_AT}
+  make install -j${CPU_COUNT} ${VERBOSE_AT}
 
 if [[ "${target_platform}" == win-* ]]; then
   if [[ "${UNISTD_CREATED}" == "1" ]]; then
