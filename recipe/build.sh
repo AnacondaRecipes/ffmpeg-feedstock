@@ -152,18 +152,19 @@ then
   type -a printf || which printf || echo "NO_PRINTF"
 
   echo "[diag]======AR_CMD"
-  echo $(AR_CMD)
+  echo "${AR_CMD}"
 
   echo "======================================================================="
 
 fi
 
-
-make AR_CMD=ar NM_CMD="nm" -j${CPU_COUNT} ${VERBOSE_AT}
-make AR_CMD=ar NM_CMD="nm" install -j${CPU_COUNT} ${VERBOSE_AT}
-
-# make -j${CPU_COUNT} ${VERBOSE_AT}
-# make install -j${CPU_COUNT} ${VERBOSE_AT}
+if [[ ${target_platform} == win-64 ]]; then
+  make AR_CMD=llvm-ar NM_CMD="llvm-nm -g" -j${CPU_COUNT} ${VERBOSE_AT}
+  make AR_CMD=llvm-ar NM_CMD="llvm-nm -g" install -j${CPU_COUNT} ${VERBOSE_AT}
+else
+  make -j${CPU_COUNT} ${VERBOSE_AT}
+  make install -j${CPU_COUNT} ${VERBOSE_AT}
+fi
 
 
 if [[ "${target_platform}" == win-* ]]; then
