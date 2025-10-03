@@ -17,7 +17,7 @@ source:
     - patches/pkgconfig_generate_windows_llvm.patch  # [win]
 
 build:
-  number: 3
+  number: 4
   run_exports:
     # ABI is not broken between minor versions
     # https://ffmpeg.org/developer.html#Library-public-interfaces
@@ -39,7 +39,7 @@ requirements:
     - make  # [not win]
     - m2-patch  # [win]
   host:
-    - aom         3.6.0
+    - aom         3.12.1
     - bzip2       {{ bzip2 }}
     - dav1d       1.2.1
     - freetype    {{ freetype }}
@@ -47,7 +47,7 @@ requirements:
     - harfbuzz    {{ harfbuzz }}
     - libiconv    1.16
     - zlib        {{ zlib }}
-    - openh264    2.1.1           # [not win]
+    - openh264    2.6.0           # [not win]
     - openjpeg    {{ openjpeg }}  # [not win]
     - librsvg     2.56.3          # [osx]
     - libtheora   1.1.1
@@ -61,6 +61,9 @@ requirements:
     - xz          5.4.6
     - libglib     2.78.4          # [osx]
     - cairo       {{ cairo }}     # [osx]
+
+  run:
+    - libtheora   1.1.1
 
 test:
   commands:
