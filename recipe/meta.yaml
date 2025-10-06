@@ -79,7 +79,7 @@ requirements:
     - libvorbis                  # pinned through run_exports
     - libxml2                    # pinned through run_exports
     - tesseract                  # pinned through run_exports
-    - lame                       # pinned through run_exports
+    - lame                       # [not win]
     - libvpx                     # pinned through run_exports
     - libopus                    # pinned through run_exports
     - openssl                    # pinned through run_exports
