@@ -14,10 +14,7 @@ then
   _CONFIG_OPTS+=("--toolchain=msvc")
   _CONFIG_OPTS+=("--host-cc=${CC}")
   _CONFIG_OPTS+=("--enable-cross-compile")
-  # disable Windows HWAccel backends that require extra system libs during linking
-  # in the clang/msvc toolchain used by autotools_clang_conda (avoids avutil link failures)
-  # _CONFIG_OPTS+=("--disable-d3d11va")
-  # _CONFIG_OPTS+=("--disable-dxva2")
+  _CONFIG_OPTS+=("--disable-libmp3lame")
   # ffmpeg by default attempts to link to libm
   # but that doesn't exist for windows
   _CONFIG_OPTS+=("--host-extralibs=")
@@ -33,31 +30,6 @@ then
       UNISTD_CREATED=1
       touch "${PREFIX}/include/unistd.h"
   fi
-
-  # # --- makedef hotfix & diagnostics (Windows only) ---
-  # echo "[diag] show makedef (first 80 lines) BEFORE fixes"
-  # head -n 80 compat/windows/makedef || true
-
-  # echo "[diag] SHA256:"
-  # sha256sum compat/windows/makedef || true
-
-  # echo "[diag] check printf availability"
-  # type -a printf || which printf || echo "NO_PRINTF"
-
-  # # normalize CRLF -> LF
-  # sed -i 's/\r$//' compat/windows/makedef
-
-  # # strip a leading '@' before any command token (e.g. '@printf' -> 'printf')
-  # sed -i 's/^[[:space:]]*@\([A-Za-z_]\)/\1/' compat/windows/makedef
-
-  # echo "[diag] show makedef (first 80 lines) AFTER fixes"
-  # head -n 80 compat/windows/makedef || true
-
-  # # optional: verify there is no '@printf' left anywhere
-  # if grep -RInE '^[[:space:]]*@printf\b' compat/windows/makedef >/dev/null 2>&1; then
-  #   echo "[error] @printf still present after fix" >&2
-  #   exit 1
-  # fi
 
 else
   # we choose libopenh264 instead of x264 to make this LGPL
@@ -119,15 +91,6 @@ fi
         --enable-version3 \
         --disable-sdl2 \
         "${_CONFIG_OPTS[@]}"
-
-
-if [[ ${target_platform} == win-64 ]]; then
-  echo "======================================================================="
-  echo "[diag] grep AR_CMD/NM_CMD in config.mak:"
-  grep -E '^(AR_CMD|NM_CMD)=' config.mak || true
-  head -n 80 compat/windows/makedef || true
-  echo "======================================================================="
-fi
 
 make -j${CPU_COUNT} ${VERBOSE_AT}
 make install -j${CPU_COUNT} ${VERBOSE_AT}

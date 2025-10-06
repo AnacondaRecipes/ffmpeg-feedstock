@@ -95,6 +95,7 @@ test:
     - ffmpeg -loglevel panic -codecs | grep "libopenh264"  # [not win]
     # Verify dynamic libraries on all systems
     {% set ffmpeg_libs = [
+        "avutil",
         "avcodec",
         "avdevice",
         "swresample",
