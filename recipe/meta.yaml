@@ -74,13 +74,13 @@ requirements:
     - libiconv                   # pinned through run_exports
     - zlib                       # pinned through run_exports
     - openh264                   # [not win]
-    - openjpeg                   # [not win]
+    - openjpeg                   # pinned through run_exports
     - libtheora                  # pinned through run_exports
-    - libvorbis                  # [not win]
+    - libvorbis                  # pinned through run_exports
     - libxml2                    # pinned through run_exports
     - tesseract                  # [not win]
     - lame                       # [not win]
-    - libvpx                     # pinned through run_exports
+    - libvpx                     # [not win]
     - libopus                    # [not win]
     - openssl                    # pinned through run_exports
     - xz                         # pinned through run_exports
