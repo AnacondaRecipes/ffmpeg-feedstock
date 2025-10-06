@@ -73,15 +73,15 @@ requirements:
     - harfbuzz                   # pinned through run_exports
     - libiconv                   # pinned through run_exports
     - zlib                       # pinned through run_exports
-    - openh264                   # pinned through run_exports
-    - openjpeg                   # pinned through run_exports
+    - openh264                   # [not win]
+    - openjpeg                   # [not win]
     - libtheora                  # pinned through run_exports
-    - libvorbis                  # pinned through run_exports
+    - libvorbis                  # [not win]
     - libxml2                    # pinned through run_exports
-    - tesseract                  # pinned through run_exports
+    - tesseract                  # [not win]
     - lame                       # [not win]
     - libvpx                     # pinned through run_exports
-    - libopus                    # pinned through run_exports
+    - libopus                    # [not win]
     - openssl                    # pinned through run_exports
     - xz                         # pinned through run_exports
 
