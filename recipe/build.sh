@@ -16,8 +16,8 @@ then
   _CONFIG_OPTS+=("--enable-cross-compile")
   # disable Windows HWAccel backends that require extra system libs during linking
   # in the clang/msvc toolchain used by autotools_clang_conda (avoids avutil link failures)
-  _CONFIG_OPTS+=("--disable-d3d11va")
-  _CONFIG_OPTS+=("--disable-dxva2")
+  # _CONFIG_OPTS+=("--disable-d3d11va")
+  # _CONFIG_OPTS+=("--disable-dxva2")
   # ffmpeg by default attempts to link to libm
   # but that doesn't exist for windows
   _CONFIG_OPTS+=("--host-extralibs=")
