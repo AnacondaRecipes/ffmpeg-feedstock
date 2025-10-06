@@ -14,6 +14,7 @@ then
   _CONFIG_OPTS+=("--toolchain=msvc")
   _CONFIG_OPTS+=("--host-cc=${CC}")
   _CONFIG_OPTS+=("--enable-cross-compile")
+  _CONFIG_OPTS+=("--disable-libmp3lame")
   # ffmpeg by default attempts to link to libm
   # but that doesn't exist for windows
   _CONFIG_OPTS+=("--host-extralibs=")
@@ -91,9 +92,9 @@ fi
         --disable-sdl2 \
         "${_CONFIG_OPTS[@]}"
 
+
 make -j${CPU_COUNT} ${VERBOSE_AT}
 make install -j${CPU_COUNT} ${VERBOSE_AT}
-
 
 if [[ "${target_platform}" == win-* ]]; then
   if [[ "${UNISTD_CREATED}" == "1" ]]; then
