@@ -40,7 +40,7 @@ source:
     - patches/0003-Remove-private-requirements-to-help-downstream-compi.patch
 
 build:
-  number: 0
+  number: 1
   run_exports:
     # ABI is not broken between minor versions
     # https://ffmpeg.org/developer.html#Library-public-interfaces
@@ -80,7 +80,7 @@ requirements:
     - harfbuzz    {{ harfbuzz }}
     - libxml2     {{ libxml2 }}
     - openssl     {{ openssl }}
-    - zlib        {{ zlib }}
+    - libzlib     {{ libzlib }}
     - lame        {{ lame }}          
     - openh264    {{ openh264 }}
     - librsvg     {{ librsvg }}
