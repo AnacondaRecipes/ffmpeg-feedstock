@@ -1,103 +1,180 @@
 #!/bin/bash
+set -eox pipefail
+
+export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig:$BUILD_PREFIX/lib/pkgconfig"
 
 # unset the SUBDIR variable since it changes the behavior of make here
 unset SUBDIR
 
-declare -a _CONFIG_OPTS=()
+# unset the sdl2 environment variable (set to 2 by conda-build) as somehow interferes
+# with the ffmpeg's configure script, see https://github.com/conda-forge/ffmpeg-feedstock/pull/308#issuecomment-2644150512
+unset sdl2
+unset svt_av1
 
-if [[ ${target_platform} == win-64 ]]
-then
-  # the target-os and toolchain picked up by default is mingw, so we have to configure
-  # these flags ourselves to get it to build properly
-  _CONFIG_OPTS+=("--ld=${LD}")
-  _CONFIG_OPTS+=("--target-os=win64")
-  _CONFIG_OPTS+=("--toolchain=msvc")
-  _CONFIG_OPTS+=("--host-cc=${CC}")
-  _CONFIG_OPTS+=("--enable-cross-compile")
-  _CONFIG_OPTS+=("--disable-libmp3lame")
+extra_args=""
+if [[ "$ARCH" == "64" ]]; then
+  ARCH=x86_64
+fi
+case "$target_platform" in
+  linux-*)
+    OS=linux
+    ;;
+  osx-*)
+    OS=darwin
+    ;;
+  win-64)
+    OS=win64
+    ;;
+  *)
+    echo "unknown OS for cross compile"
+    exit 1
+    ;;
+esac
+extra_args="${extra_args} --arch=$ARCH --target-os=$OS --cross-prefix=$HOST- --host-cc=$CC_FOR_BUILD"
+
+if [[ "${target_platform}" == "win-64" ]]; then
+  # 2022/07 hmaarrfk
+  # Specifying these extra flags for osx and linux
+  # seems to cause things to fail since FFmpeg
+  # expects cc to be the ld
+  # # https://github.com/FFmpeg/FFmpeg/blob/master/configure#L4894
+  # the LDFLAGs on Unix contain the -Wl, prefix, and thus
+  # are incompatible with the direct ld command
+  # Thus we avoid specifying ld for the unix platforms
+  extra_args="${extra_args} --ld=${LD}"
+
+  extra_args="${extra_args} --toolchain=msvc"
+  extra_args="${extra_args} --host-cc=${CC}"
+  extra_args="${extra_args} --extra-libs=ucrt.lib --extra-libs=vcruntime.lib --extra-libs=oldnames.lib"
+  extra_args="${extra_args} --strip=llvm-strip"
+  extra_args="${extra_args} --disable-pthreads"
+  extra_args="${extra_args} --enable-w32threads"
+  # Through, locally, I get
+  #    This app can't run on your PC
+  # and access denied on the terminal
+  # I cannot even run llvm-strip on the terminal
+  extra_args="${extra_args} --disable-stripping"
+
   # ffmpeg by default attempts to link to libm
   # but that doesn't exist for windows
-  _CONFIG_OPTS+=("--host-extralibs=")
-  # pthreads doesn't exist on windows (without relying on msys2, etc)
-  _CONFIG_OPTS+=("--disable-pthreads")
-  _CONFIG_OPTS+=("--enable-w32threads")
-  # manually include the runtime libs
-  _CONFIG_OPTS+=("--extra-libs=ucrt.lib vcruntime.lib oldnames.lib")
-  _CONFIG_OPTS+=("--disable-stripping")
-  export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
-  # unistd.h is included in ${PREFIX}/include/zconf.h
+  extra_args="${extra_args} --host-extralibs="
+
+  # Delete line that includes unistd.h from zconf. we should patch this
+  # better for LLVM compatibility
+  # I submitted a ticket upstream
+  # https://github.com/madler/zlib/issues/674
+  # cp ${PREFIX}/include/zconf.h zconf.h.backup
+  # sed -i "/unistd/d" ${PREFIX}/include/zconf.h
   if [[ ! -f "${PREFIX}/include/unistd.h" ]]; then
       UNISTD_CREATED=1
       touch "${PREFIX}/include/unistd.h"
   fi
 
-else
-  # we choose libopenh264 instead of x264 to make this LGPL
-  # we don't have these packages for win
-  _CONFIG_OPTS+=("--enable-libopenh264")
-  _CONFIG_OPTS+=("--enable-libopus")
-  _CONFIG_OPTS+=("--enable-libmp3lame")
-  # Our win packages don't have .pc files for these
-  _CONFIG_OPTS+=("--enable-libopenjpeg")
-  _CONFIG_OPTS+=("--enable-libvorbis")
-  _CONFIG_OPTS+=("--enable-pthreads")
+  # Add pkgconfig from the prefix to search through it correctly
+  export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
+  PKG_CONFIG="${BUILD_PREFIX}/Library/bin/pkg-config"
+
+  # I'm not sure, but it seems like
+  # their hacky way of silencing things is messing with the AR command
+  # Especially as it is called in compat/windows/makedef
+  # https://github.com/FFmpeg/FFmpeg/blob/master/ffbuild/common.mak#L21
+  # I think their hacky silence is corrupting later on AR commands invoked
+  # from shells with a @printf statement
+  # To avoid hacky patches, I'm just going to make it verbose, always.
+  # maybe related to https://trac.ffmpeg.org/ticket/6620
+  export V=1
+elif [[ "${target_platform}" == linux-* ]]; then
+  PKG_CONFIG="${BUILD_PREFIX}/bin/pkg-config"
+  extra_args="${extra_args} --disable-gnutls"
+  extra_args="${extra_args} --enable-libvpx"
+  extra_args="${extra_args} --enable-pthreads"
+  extra_args="${extra_args} --enable-alsa"
+  extra_args="${extra_args} --enable-libpulse"
+  extra_args="${extra_args} --enable-libdrm"
+  if [[ "${target_platform}" == "linux-64" ]]; then
+    extra_args="${extra_args} --enable-libvpl"
+    extra_args="${extra_args} --enable-vaapi"
+  fi
+elif [[ "${target_platform}" == osx-* ]]; then
+  if [[ "${target_platform}" == osx-arm64 ]]; then
+    extra_args="${extra_args} --enable-neon"
+  else
+    extra_args="${extra_args} --enable-videotoolbox"
+  fi
+  extra_args="${extra_args} --disable-gnutls"
+  extra_args="${extra_args} --enable-libvpx"
+  extra_args="${extra_args} --enable-pthreads"
+  extra_args="${extra_args} --disable-libdrm"
+  extra_args="${extra_args} --disable-librsvg"
+  # See https://github.com/conda-forge/ffmpeg-feedstock/pull/115
+  # why this flag needs to be removed.
+  sed -i.bak s/-Wl,-single_module// configure
+  PKG_CONFIG="${BUILD_PREFIX}/bin/pkg-config"
 fi
 
-
-if [[ ${target_platform} != linux-s390x ]] && [[ ${target_platform} != win-64 ]]
+if [[ ${target_platform} != win-64 ]]
 then
-  # we don't have a tesseract or libvpx for win or s390x
-  _CONFIG_OPTS+=("--enable-libtesseract")
-  _CONFIG_OPTS+=("--enable-libvpx")
+  extra_args="${extra_args} --enable-libtesseract"
+  extra_args="${extra_args} --enable-libvpx"
+  extra_args="${extra_args} --enable-libass"
+  extra_args="${extra_args} --enable-librsvg"
 fi
 
-
-if [[ ${target_platform} == osx-64 ]] || [[ ${target_platform} == osx-arm64 ]]
-then
-  # on other platform pkg-config doesn't find xau which is supposedly in the dependency chain of librsvg
-  _CONFIG_OPTS+=("--enable-librsvg")
-fi
-
-# common flags to all platforms
-# openssl: as of OpenSSL 3, the license is Apache-2.0 so we can enable this
-# disable-static: we generally favor shared library binaries than static
-# configure AR, RANLIB, STRIP and co. since they are not always automatically detected
 ./configure \
         --prefix="${PREFIX}" \
         --cc=${CC} \
-        --ar=${AR} \
+        --cxx=${CXX} \
         --nm=${NM} \
-        --ranlib=${RANLIB} \
-        --strip=${STRIP} \
-        --disable-doc \
-        --enable-swresample \
-        --enable-swscale \
+        --ar=${AR} \
         --enable-openssl \
-        --enable-libxml2 \
-        --enable-libtheora \
         --enable-demuxer=dash \
-        --enable-postproc \
         --enable-hardcoded-tables \
         --enable-libfreetype \
         --enable-libharfbuzz \
         --enable-libfontconfig \
+        --enable-libopenh264 \
         --enable-libdav1d \
-        --enable-zlib \
+        --enable-libmp3lame \
         --enable-libaom \
+        --enable-libsvtav1 \
+        --enable-libxml2 \
         --enable-pic \
         --enable-shared \
+        --enable-version3 \
+        --enable-zlib \
+        --enable-libvorbis \
+        --enable-libopus \
+        --enable-libwebp \
+        --enable-libshaderc \
+        --disable-ffplay \
         --disable-static \
         --disable-gpl \
-        --enable-version3 \
-        --disable-sdl2 \
-        "${_CONFIG_OPTS[@]}"
+        --disable-doc \
+        --pkg-config=${PKG_CONFIG} \
+        ${extra_args}
 
+if [[ "${target_platform}" == win-* ]]; then
+  # Don't install the def files, but intall the lib files instead
+  sed -i 's/SLIB_INSTALL_EXTRA_LIB=$(SLIBNAME_WITH_MAJOR:$(SLIBSUF)=.def)/SLIB_INSTALL_EXTRA_LIB=$(SLIBNAME:$(SLIBSUF)=.lib)/' ffbuild/config.mak
+  # install the lib files in the lib directory, not bin
+  sed -i 's/SLIB_INSTALL_EXTRA_SHLIB=$(SLIBNAME:$(SLIBSUF)=.lib)/SLIB_INSTALL_EXTRA_SHLIB=/' ffbuild/config.mak
 
-make -j${CPU_COUNT} ${VERBOSE_AT}
-make install -j${CPU_COUNT} ${VERBOSE_AT}
+  # Their default DLLs include the version in the dll name
+  # If we want to, we can uncomment the lines below to remove the version from the dll name
+  # we don't need those version numbers because conda is our package manager
+  # sed -i 's/SLIB_INSTALL_NAME=$(SLIBNAME_WITH_MAJOR)/SLIB_INSTALL_NAME=$(SLIBNAME)/' ffbuild/config.mak
+  # sed -i 's/SLIBNAME_WITH_VERSION=$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)/SLIBNAME_WITH_VERSION=$(SLIBNAME)/' ffbuild/config.mak
+  # sed -i 's/SLIBNAME_WITH_MAJOR=$(SLIBPREF)$(FULLNAME)-$(LIBMAJOR)$(SLIBSUF)/SLIBNAME_WITH_MAJOR=$(SLIBNAME)/' ffbuild/config.mak
+fi
+
+make -j${CPU_COUNT}
+make install
 
 if [[ "${target_platform}" == win-* ]]; then
   if [[ "${UNISTD_CREATED}" == "1" ]]; then
       rm -f "${PREFIX}/include/unistd.h"
+  fi
+  if [[ "${LIBX264_LIB_CREATED}" == "1" ]]; then
+    rm -f ${PREFIX}/lib/libx264.lib
   fi
 fi

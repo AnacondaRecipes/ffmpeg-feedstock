@@ -1,24 +1,46 @@
 {% set name = "ffmpeg" %}
-{% set version = "6.1.1" %}
+{% set version = "8.0.1" %}
+{% set x,y,z = version.split('.') %}
+{% set version_ffmpeg_style = x ~ '.' ~ y if z == "0" else version %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n{{ version }}.tar.gz
-  sha256: 7c1ebea95d815e49c1e60c7ee816410dec73a81b8ac002b276780d2f9048e598
-  # This patch can be removed once the fix below is merged and uploaded,
-  # the libxml2 2.13.1 buildout is done, and the libxml2 aggregate pinning
-  # has been updated.
-  # https://github.com/AnacondaRecipes/libxml2-feedstock/pull/16
+  url: https://ffmpeg.org/releases/{{ name }}-{{ version_ffmpeg_style }}.tar.gz
+  sha256: ed1cfade43aab7711c88937a0afc15b7b22efdc528c6ff074b4027c55a3c175c
   patches:
-    - patches/0001-use-include-path-of-our-libxml2.patch # [win]
+    # https://code.ffmpeg.org/FFmpeg/FFmpeg/issues/21102
+    - patches/21102-unbreak-hardcoded-tables.patch
+    ### conda-forge patches below
     - patches/pkgconfig_generate_windows_llvm.patch  # [win]
-    - patches/0002-win64-ar-loging-removed.patch     # [win]
+    # I don't really think that the original changes made at FFmpeg make sense for
+    # conda-forge's conmpiler stack on windows
+    # https://github.com/FFmpeg/FFmpeg/commit/f8d6d0fbf12b3247a37885cd0a5cd32ddc1f01b3
+    # https://github.com/conda-forge/ffmpeg-feedstock/pull/193#issuecomment-1484476264
+    - patches/0001-Revert-compat-Use-instead-of-for-rc.exe-options.patch
+
+    # needed for qtwebengine
+    - patches/add-av_stream_get_first_dts-for-chromium.patch
+
+    # Without this the paths on windows wouldn't work at the installation step
+    # hmaarrfk -- Need to file an issue upstream???
+    # https://code.ffmpeg.org/FFmpeg/FFmpeg/commit/a125f5db03b86c03fffb9598bd6e2026ba2c7a97
+    - patches/consolidate_pattern_rules_for_compression.patch
+    # hmaarrfk -- not sure why i need this one. need to report upstream
+    - patches/use_forward_slash_on_windows.patch
+
+    # With updates to conda-forge tooling
+    # it seems that gnu-windres that it is found
+    # but we want to use vc's rc compiler
+    # https://github.com/conda-forge/ffmpeg-feedstock/pull/351#issuecomment-3637099344
+    - patches/0002-disable-gnu-windres.patch
+    # https://github.com/conda-forge/ffmpeg-feedstock/issues/347
+    - patches/0003-Remove-private-requirements-to-help-downstream-compi.patch
 
 build:
-  number: 5
+  number: 0
   run_exports:
     # ABI is not broken between minor versions
     # https://ffmpeg.org/developer.html#Library-public-interfaces
@@ -39,32 +61,38 @@ requirements:
     - libtool  # [not win]
     - nasm
     - make  # [not win]
-    - m2-patch  # [win]
   host:
-    - aom         3.12.1
+    - shaderc
+    - svt-av1
+    - libopus
+    - libass                          # [unix]
+    - pulseaudio                      # [linux]
+    - alsa-lib                        # [linux and x86_64]
+    - libvpl                          # [linux and x86_64]
+    - xz          {{ xz }}
+    - aom         {{ aom }}
     - bzip2       {{ bzip2 }}
-    - dav1d       1.2.1
+    - dav1d       {{ dav1d }}
+    - libiconv    {{ libiconv }}
     - freetype    {{ freetype }}
+    - libtheora   {{ libtheora }}
     - fontconfig  {{ fontconfig }}
     - harfbuzz    {{ harfbuzz }}
-    - libiconv    1.16
-    - zlib        {{ zlib }}
-    - openh264    2.6.0           # [not win]
-    - openjpeg    {{ openjpeg }}  # [not win]
-    - librsvg     2.56.3          # [osx]
-    - libtheora   1.2.0
-    - libvorbis   1.3.7           # [not win]
     - libxml2     {{ libxml2 }}
-    - tesseract   5.2.0           # [not win]
-    - lame        3.100           # [not win]
-    - libvpx      {{ libvpx }}    # [not win]
-    - libopus     1.3             # [not win]
-    - libxcb      {{ libxcb }}    # [not win]
     - openssl     {{ openssl }}
-    - xz          5.4.6
-    - libglib     2.78.4          # [osx]
-    - cairo       {{ cairo }}     # [osx]
-
+    - zlib        {{ zlib }}
+    - lame        {{ lame }}          
+    - openh264    {{ openh264 }}
+    - librsvg     {{ librsvg }}
+    - libvorbis   {{ libvorbis }}
+    - libwebp     {{ libwebp_base }}
+    - cairo       {{ cairo }}
+    - libglib     {{ libglib }}
+    - libdrm      {{ libdrm }}        # [linux]
+    - tesseract   {{ tesseract }}     # [not win]
+    - openjpeg    {{ openjpeg }}      # [not win]
+    - libvpx      {{ libvpx }}        # [not win]
+    - libxcb      {{ libxcb }}        # [not win]
   run:
     - aom                        # pinned through run_exports
     - bzip2                      # pinned through run_exports
@@ -74,42 +102,76 @@ requirements:
     - harfbuzz                   # pinned through run_exports
     - libiconv                   # pinned through run_exports
     - zlib                       # pinned through run_exports
-    - openh264                   # [not win]
     - openjpeg                   # pinned through run_exports
     - libtheora                  # pinned through run_exports
     - libvorbis                  # pinned through run_exports
     - libxml2                    # pinned through run_exports
-    - tesseract                  # [not win]
-    - lame                       # [not win]
-    - libxcb                     # [not win]
-    - libvpx                     # [not win]
-    - libopus                    # [not win]
     - openssl                    # pinned through run_exports
     - xz                         # pinned through run_exports
+    - shaderc                    # pinned through run_exports    
+    - svt-av1                    # pinned through run_exports
+    - libopus                    # pinned through run_exports
+    - openh264                   # pinned through run_exports
+    - librsvg                    # pinned through run_exports
+    - libwebp-base               # pinned through run_exports
+    - cairo                      # pinned through run_exports
+    - lame                       # pinned through run_exports
+    - libglib                    # pinned through run_exports
+    - tesseract                  # [not win]
+    - libxcb                     # [not win]
+    - libvpx                     # [not win]
+    - libass                     # [not win]
+    - pulseaudio                 # [linux]
+    - libva                      # [linux]
+    - xorg-libx11                # [linux]
+    - alsa-lib                   # [linux]
+
+{% set grep = "grep" %}  # [unix]
+{% set grep = "findstr" %}  # [win]
 
 test:
   commands:
     - ffmpeg --help
-    - ffmpeg -loglevel panic -protocols | grep "https"     # [not win]
-    - ffmpeg -loglevel panic -codecs | grep "libmp3lame"   # [not win]
-    - ffmpeg -loglevel panic -codecs | grep "DEVI.S zlib"  # [not win]
-    - ffmpeg -loglevel panic -codecs | grep "DEV.LS h264"  # [not (win or s390x)]
-    - ffmpeg -loglevel panic -codecs | grep "libopenh264"  # [not win]
+    - ffmpeg -hide_banner -codecs
+    - ffmpeg -hide_banner -protocols
+    - ffmpeg -hide_banner -protocols | {{ grep }} "https"
+    - ffmpeg -hide_banner -codecs | {{ grep }} "libmp3lame"       # [unix]
+    - ffmpeg -hide_banner -codecs | {{ grep }} "DEVI.S\ zlib"
+    - ffmpeg -hide_banner -codecs | {{ grep }} "DEV.LS h264"
+    - ffmpeg -hide_banner -codecs | {{ grep }} "libopenh264"
+    - ffmpeg -hide_banner -codecs | {{ grep }} "vaapi"            # [linux64]
+    - ffmpeg -hide_banner -codecs | {{ grep }} "libaom"
+    - ffmpeg -hide_banner -codecs | {{ grep }} "libsvtav1"
     # Verify dynamic libraries on all systems
     {% set ffmpeg_libs = [
-        "avutil",
-        "avcodec",
         "avdevice",
         "swresample",
         "avfilter",
         "avcodec",
         "avformat",
-        "swscale"
+        "swscale",
+        "avutil",
     ] %}
     {% for each_ffmpeg_lib in ffmpeg_libs %}
-    - test -f $CONDA_PREFIX/lib/lib{{ each_ffmpeg_lib }}${SHLIB_EXT} # [not win]
-    - if not exist %PREFIX%\Library\bin\{{ each_ffmpeg_lib }}*.dll exit 1  # [win]
-    - if not exist %PREFIX%\Library\bin\{{ each_ffmpeg_lib }}.lib exit 1  # [win]
+    - test -f $PREFIX/lib/lib{{ each_ffmpeg_lib }}${SHLIB_EXT}  # [unix]
+    - if not exist %PREFIX%\\Library\\lib\\{{ each_ffmpeg_lib }}.lib exit 1  # [win]
+    {% endfor %}
+    # Windows dynamic libraries have a suffix
+    # This is useful to keep since it helps detect ABI breakage
+    # One can find the SO versions by reading the release notes
+    # https://ffmpeg.org/download.html#releases
+    {% set ffmpeg_libs = [
+        "avutil-60",
+        "avcodec-62",
+        "avformat-62",
+        "avdevice-62",
+        "swresample-6",
+        "avfilter-11",
+        "swscale-9",
+    ] %}
+    {% for each_ffmpeg_lib in ffmpeg_libs %}
+    - echo "Checking for existance of {{ each_ffmpeg_lib }}.dll"             # [win]
+    - if not exist %PREFIX%\\Library\\bin\\{{ each_ffmpeg_lib }}.dll exit 1  # [win]
     {% endfor %}
 
 about:
