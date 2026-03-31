@@ -40,7 +40,7 @@ source:
     - patches/0003-Remove-private-requirements-to-help-downstream-compi.patch
 
 build:
-  number: 3
+  number: 4
   run_exports:
     # ABI is not broken between minor versions
     # https://ffmpeg.org/developer.html#Library-public-interfaces
@@ -49,7 +49,6 @@ build:
     - libcxx
     # these seems to be overdepending only on linux
     - libstdcxx-ng  # [linux]
-    - aom           # [win]
 
 requirements:
   build:
@@ -70,7 +69,7 @@ requirements:
     - alsa-lib                           # [linux and x86_64]
     - libvpl                             # [linux and x86_64]
     - xz            {{ xz }}
-    - aom           {{ aom }}
+    - aom           3.13.2
     - bzip2         {{ bzip2 }}
     - dav1d         {{ dav1d }}
     - libiconv      {{ libiconv }}
