@@ -83,6 +83,8 @@ if [[ "${target_platform}" == "win-64" ]]; then
   # To avoid hacky patches, I'm just going to make it verbose, always.
   # maybe related to https://trac.ffmpeg.org/ticket/6620
   export V=1
+  # spirv/shaderc is disabled when Vulkan is unavailable; do not pull shaderc in meta on Windows
+  extra_args="${extra_args} --disable-libshaderc"
 elif [[ "${target_platform}" == linux-* ]]; then
   PKG_CONFIG="${BUILD_PREFIX}/bin/pkg-config"
   extra_args="${extra_args} --disable-gnutls"
@@ -118,6 +120,7 @@ then
   extra_args="${extra_args} --enable-libvpx"
   extra_args="${extra_args} --enable-libass"
   extra_args="${extra_args} --enable-librsvg"
+  extra_args="${extra_args} --enable-libshaderc"
 fi
 
 ./configure \
@@ -145,7 +148,6 @@ fi
         --enable-libvorbis \
         --enable-libopus \
         --enable-libwebp \
-        --enable-libshaderc \
         --disable-ffplay \
         --disable-static \
         --disable-gpl \

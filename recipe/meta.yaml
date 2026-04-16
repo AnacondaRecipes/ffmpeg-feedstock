@@ -40,7 +40,7 @@ source:
     - patches/0003-Remove-private-requirements-to-help-downstream-compi.patch
 
 build:
-  number: 3
+  number: 4
   run_exports:
     # ABI is not broken between minor versions
     # https://ffmpeg.org/developer.html#Library-public-interfaces
@@ -49,7 +49,7 @@ build:
     - libcxx
     # these seems to be overdepending only on linux
     - libstdcxx-ng  # [linux]
-    - aom           # [win]
+    - libstdcxx     # [linux]
 
 requirements:
   build:
@@ -62,7 +62,8 @@ requirements:
     - nasm
     - make  # [not win]
   host:
-    - shaderc
+    # libshaderc needs Vulkan; Windows MSVC builds do not link it (see build.sh)
+    - shaderc                      # [not win]
     - svt-av1
     - libopus
     - libass                             # [unix]
@@ -70,12 +71,11 @@ requirements:
     - alsa-lib                           # [linux and x86_64]
     - libvpl                             # [linux and x86_64]
     - xz            {{ xz }}
-    - aom           {{ aom }}
+    - aom           3.13.2
     - bzip2         {{ bzip2 }}
     - dav1d         {{ dav1d }}
     - libiconv      {{ libiconv }}
     - freetype      {{ freetype }}
-    - libtheora     {{ libtheora }}
     - fontconfig    {{ fontconfig }}
     - harfbuzz      {{ harfbuzz }}
     - libxml2       {{ libxml2 }}
@@ -83,14 +83,14 @@ requirements:
     - libzlib       {{ libzlib }}
     - lame          {{ lame }}          
     - openh264      {{ openh264 }}
-    - librsvg       {{ librsvg }}
+    # librsvg is only enabled for non-Windows (build.sh); glib comes in via that stack
+    - librsvg       {{ librsvg }}       # [not win]
     - libvorbis     {{ libvorbis }}
     - libwebp-base  {{ libwebp_base }}
-    - cairo         {{ cairo }}
-    - libglib       {{ libglib }}
+    - libglib       {{ libglib }}       # [not win]
+    - cairo         {{ cairo }}         # [not win]
     - libdrm        {{ libdrm }}        # [linux]
     - tesseract     {{ tesseract }}     # [not win]
-    - openjpeg      {{ openjpeg }}      # [not win]
     - libvpx        {{ libvpx }}        # [not win]
     - libxcb        {{ libxcb }}        # [not win]
   run:
@@ -102,21 +102,19 @@ requirements:
     - harfbuzz                   # pinned through run_exports
     - libiconv                   # pinned through run_exports
     - zlib                       # pinned through run_exports
-    - openjpeg                   # pinned through run_exports
-    - libtheora                  # pinned through run_exports
     - libvorbis                  # pinned through run_exports
     - libxml2                    # pinned through run_exports
     - openssl                    # pinned through run_exports
     - xz                         # pinned through run_exports
-    - shaderc                    # pinned through run_exports    
+    - shaderc                    # [not win]
     - svt-av1                    # pinned through run_exports
     - libopus                    # pinned through run_exports
     - openh264                   # pinned through run_exports
-    - librsvg                    # pinned through run_exports
+    - librsvg                    # [not win]
     - libwebp-base               # pinned through run_exports
-    - cairo                      # pinned through run_exports
+    - cairo                      # [not win]
     - lame                       # pinned through run_exports
-    - libglib                    # pinned through run_exports
+    - libglib                    # [not win]
     - tesseract                  # [not win]
     - libxcb                     # [not win]
     - libvpx                     # [not win]
