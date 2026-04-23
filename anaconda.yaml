@@ -3,6 +3,6 @@ upstream_sources:
   - github:
       identifier: FFmpeg/FFmpeg
       use_max_tag: true
-      exclude_regex: (?i)^(?=.*(?:(?<=\d)rc\d*|(?<=\d)dev\d+|(?:^|[-._])(?:alpha|beta|gamma|pre|preview)(?:\d+)?|[-._]rc\d+|(?:^|[-._])dev\d+|(?:\d+\.)+\d+[ab]\d*)).+$
-      from_pattern: ^v?(\d+(?:\.\d+)*.*)$
+      include_regex: ^n\d+(?:\.\d+)+$
+      from_pattern: ^n(.+)$
       to_pattern: \1
