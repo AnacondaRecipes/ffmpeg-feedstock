@@ -40,7 +40,7 @@ source:
     - patches/0003-Remove-private-requirements-to-help-downstream-compi.patch
 
 build:
-  number: 4
+  number: 5
   run_exports:
     # ABI is not broken between minor versions
     # https://ffmpeg.org/developer.html#Library-public-interfaces
@@ -122,6 +122,7 @@ requirements:
     - libvpx                     # [not win]
     - libass                     # [not win]
     - pulseaudio                 # [linux]
+    - pulseaudio-client          # [linux]
     - libva                      # [linux]
     - xorg-libx11                # [linux]
     - alsa-lib                   # [linux]
