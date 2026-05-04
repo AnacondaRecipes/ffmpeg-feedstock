@@ -122,6 +122,7 @@ requirements:
     - libvpx                     # [not win]
     - libass                     # [not win]
     - pulseaudio                 # [linux]
+    - pulseaudio-client          # [linux]
     - libva                      # [linux]
     - xorg-libx11                # [linux]
     - alsa-lib                   # [linux]
