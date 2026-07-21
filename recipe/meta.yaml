@@ -35,7 +35,7 @@ source:
     - patches/0006-Use-forward-lahs-on-windows.patch
 
 build:
-  number: 0
+  number: 1
   run_exports:
     # ABI is not broken between minor versions
     # https://ffmpeg.org/developer.html#Library-public-interfaces
