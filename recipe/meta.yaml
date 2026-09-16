@@ -83,6 +83,7 @@ requirements:
     - libwebp-base  {{ libwebp_base }}
     - cairo         {{ cairo }}
     - libglib       {{ libglib }}
+    - glib          {{ glib }}          # [not win]
     - libdrm        {{ libdrm }}        # [linux]
     - tesseract     {{ tesseract }}     # [not win]
     - openjpeg      {{ openjpeg }}      # [not win]
