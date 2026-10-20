@@ -22,7 +22,7 @@ case "$target_platform" in
   osx-*)
     OS=darwin
     ;;
-  win-64)
+  win-64|win-arm64)
     OS=win64
     ;;
   *)
@@ -32,7 +32,7 @@ case "$target_platform" in
 esac
 extra_args="${extra_args} --arch=$ARCH --target-os=$OS --cross-prefix=$HOST- --host-cc=$CC_FOR_BUILD"
 
-if [[ "${target_platform}" == "win-64" ]]; then
+if [[ "${target_platform}" == win-* ]]; then
   # 2022/07 hmaarrfk
   # Specifying these extra flags for osx and linux
   # seems to cause things to fail since FFmpeg
@@ -54,6 +54,13 @@ if [[ "${target_platform}" == "win-64" ]]; then
   # and access denied on the terminal
   # I cannot even run llvm-strip on the terminal
   extra_args="${extra_args} --disable-stripping"
+  extra_args="${extra_args} --disable-libdrm"
+
+  if [[ "${target_platform}" == "win-arm64" ]]; then
+    # The msvc toolchain defaults to armasm64.exe, which needs gas-preprocessor.pl.
+    # clang assembles the GNU-syntax aarch64 sources directly.
+    extra_args="${extra_args} --as=${CC}"
+  fi
 
   # ffmpeg by default attempts to link to libm
   # but that doesn't exist for windows
@@ -112,7 +119,7 @@ elif [[ "${target_platform}" == osx-* ]]; then
   PKG_CONFIG="${BUILD_PREFIX}/bin/pkg-config"
 fi
 
-if [[ ${target_platform} != win-64 ]]
+if [[ ${target_platform} != win-* ]]
 then
   extra_args="${extra_args} --enable-libtesseract"
   extra_args="${extra_args} --enable-libvpx"
