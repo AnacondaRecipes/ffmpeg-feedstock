@@ -1,5 +1,0 @@
-channels:
-# openh264
-  - https://package-build.anaconda.com/pkg-orchestrator/v1/channels/graphs/3afe0c04-9176-411c-acd5-66d3e1febba6
-  # svt-av1
-  - https://package-build.anaconda.com/pkg-orchestrator/v1/channels/graphs/a744ae42-7124-424f-b092-3cd3d911d85a
