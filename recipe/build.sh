@@ -54,6 +54,7 @@ if [[ "${target_platform}" == win-* ]]; then
   # and access denied on the terminal
   # I cannot even run llvm-strip on the terminal
   extra_args="${extra_args} --disable-stripping"
+  extra_args="${extra_args} --disable-libdrm"
 
   if [[ "${target_platform}" == "win-arm64" ]]; then
     # The msvc toolchain defaults to armasm64.exe, which needs gas-preprocessor.pl.
