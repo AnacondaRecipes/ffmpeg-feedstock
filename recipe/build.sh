@@ -43,6 +43,18 @@ if [[ "${target_platform}" == win-* ]]; then
   # Thus we avoid specifying ld for the unix platforms
   extra_args="${extra_args} --ld=${LD}"
 
+  # ffmpeg 9.0's configure fails any link test whose output contains an
+  # lld-link "ignoring unknown argument" warning. Our LDFLAGS hold GNU-style
+  # clang driver flags that lld-link has always warned about and ignored, so
+  # keep only the library search paths, translated to lld-link syntax.
+  new_ldflags=""
+  for flag in ${LDFLAGS}; do
+    case "${flag}" in
+      -L*) new_ldflags="${new_ldflags} -libpath:${flag#-L}";;
+    esac
+  done
+  export LDFLAGS="${new_ldflags}"
+
   extra_args="${extra_args} --toolchain=msvc"
   extra_args="${extra_args} --host-cc=${CC}"
   extra_args="${extra_args} --extra-libs=ucrt.lib --extra-libs=vcruntime.lib --extra-libs=oldnames.lib"
@@ -127,6 +139,8 @@ then
   extra_args="${extra_args} --enable-librsvg"
 fi
 
+# ffmpeg 9.0 dropped --enable-libshaderc; Vulkan shaders are now precompiled at
+# build time (only relevant with --enable-vulkan, which this recipe does not use)
 ./configure \
         --prefix="${PREFIX}" \
         --cc=${CC} \
@@ -152,7 +166,6 @@ fi
         --enable-libvorbis \
         --enable-libopus \
         --enable-libwebp \
-        --enable-libshaderc \
         --disable-ffplay \
         --disable-static \
         --disable-gpl \

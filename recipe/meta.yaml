@@ -1,5 +1,5 @@
 {% set name = "ffmpeg" %}
-{% set version = "8.1.2" %}
+{% set version = "9.0.2" %}
 {% set x,y,z = version.split('.') %}
 {% set version_ffmpeg_style = x ~ '.' ~ y if z == "0" else version %}
 
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://{{ name }}.org/releases/{{ name }}-{{ version_ffmpeg_style }}.tar.gz
-  sha256: 32faba5ef67340d54724941eae1425580791195312a4fd13bf6f820a2818bf22
+  sha256: 84960df915059e8754fef2cd7c9afeb614062b1b5458ec471eecee619ee04e98
   patches:
     ### conda-forge patches below
     - patches/0001-Generate-pkgconfig-for-windows.patch  # [win]
@@ -35,7 +35,7 @@ source:
     - patches/0006-Use-forward-lahs-on-windows.patch
 
 build:
-  number: 3
+  number: 0
   run_exports:
     # ABI is not broken between minor versions
     # https://ffmpeg.org/developer.html#Library-public-interfaces
@@ -57,7 +57,6 @@ requirements:
     - nasm
     - make  # [not win]
   host:
-    - shaderc
     - svt-av1
     - libopus
     - libass                             # [unix]
@@ -104,7 +103,6 @@ requirements:
     - libxml2                    # pinned through run_exports
     - openssl                    # pinned through run_exports
     - xz                         # pinned through run_exports
-    - shaderc                    # pinned through run_exports
     - svt-av1                    # pinned through run_exports
     - libopus                    # pinned through run_exports
     - openh264                   # pinned through run_exports
@@ -158,13 +156,13 @@ test:
     # One can find the SO versions by reading the release notes
     # https://ffmpeg.org/download.html#releases
     {% set ffmpeg_libs = [
-        "avutil-60",
-        "avcodec-62",
-        "avformat-62",
-        "avdevice-62",
-        "swresample-6",
-        "avfilter-11",
-        "swscale-9",
+        "avutil-61",
+        "avcodec-63",
+        "avformat-63",
+        "avdevice-63",
+        "swresample-7",
+        "avfilter-12",
+        "swscale-10",
     ] %}
     {% for each_ffmpeg_lib in ffmpeg_libs %}
     - echo "Checking for existance of {{ each_ffmpeg_lib }}.dll"             # [win]
